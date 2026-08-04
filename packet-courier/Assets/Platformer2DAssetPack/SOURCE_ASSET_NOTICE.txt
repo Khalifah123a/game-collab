@@ -1,0 +1,6 @@
+SOURCE-ASSET NOTICE
+
+These files were extracted from an image supplied by the user.
+No new copyright license is granted by this package.
+The user is responsible for ensuring they have permission to use,
+modify, redistribute, or publish the source artwork and extracted assets.

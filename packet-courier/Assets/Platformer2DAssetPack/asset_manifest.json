@@ -1,0 +1,257 @@
+{
+  "name": "Platformer2DAssetPack",
+  "source": "feb407f6-ccf1-4cf4-892a-76dfa0046549.png",
+  "note": "Assets were extracted from the user-supplied composite preview image.",
+  "categories": {
+    "character_frames": [
+      {
+        "file": "character_frame_01.png",
+        "visible_frame": 1
+      },
+      {
+        "file": "character_frame_02.png",
+        "visible_frame": 2
+      },
+      {
+        "file": "character_frame_03.png",
+        "visible_frame": 3
+      },
+      {
+        "file": "character_frame_04.png",
+        "visible_frame": 4
+      },
+      {
+        "file": "character_frame_05.png",
+        "visible_frame": 5
+      },
+      {
+        "file": "character_frame_06.png",
+        "visible_frame": 6
+      },
+      {
+        "file": "character_frame_07.png",
+        "visible_frame": 7
+      },
+      {
+        "file": "character_frame_08.png",
+        "visible_frame": 8
+      },
+      {
+        "file": "character_frame_09.png",
+        "visible_frame": 9
+      },
+      {
+        "file": "character_frame_10.png",
+        "visible_frame": 10
+      },
+      {
+        "file": "character_frame_11.png",
+        "visible_frame": 11
+      },
+      {
+        "file": "character_frame_12.png",
+        "visible_frame": 12
+      },
+      {
+        "file": "character_frame_13.png",
+        "visible_frame": 13
+      }
+    ],
+    "background_layers": [
+      {
+        "file": "background_01_sky.png",
+        "source_box": [
+          397,
+          0,
+          654,
+          77
+        ]
+      },
+      {
+        "file": "background_02_mountains.png",
+        "source_box": [
+          395,
+          77,
+          656,
+          160
+        ]
+      },
+      {
+        "file": "background_03_forest.png",
+        "source_box": [
+          384,
+          162,
+          654,
+          249
+        ]
+      },
+      {
+        "file": "background_04_silhouette.png",
+        "source_box": [
+          384,
+          251,
+          654,
+          322
+        ]
+      }
+    ],
+    "terrain_and_props": [
+      {
+        "file": "terrain_01_small_grass_platform.png"
+      },
+      {
+        "file": "terrain_02_tall_dirt_column.png"
+      },
+      {
+        "file": "terrain_03_medium_dirt_column.png"
+      },
+      {
+        "file": "terrain_04_wide_dirt_column.png"
+      },
+      {
+        "file": "terrain_05_corner_grass_platform.png"
+      },
+      {
+        "file": "terrain_06_sloped_grass_platform.png"
+      },
+      {
+        "file": "terrain_07_large_hanging_island.png"
+      },
+      {
+        "file": "terrain_08_block_platform_composition.png"
+      },
+      {
+        "file": "terrain_09_small_floating_platform.png"
+      },
+      {
+        "file": "prop_01_crate.png"
+      },
+      {
+        "file": "prop_02_sign.png"
+      },
+      {
+        "file": "hazard_01_spikes_block.png"
+      },
+      {
+        "file": "prop_03_ladder.png"
+      }
+    ],
+    "items": [
+      {
+        "file": "item_coin.png",
+        "source_box": [
+          1045,
+          10,
+          1134,
+          108
+        ]
+      },
+      {
+        "file": "item_gem_purple.png",
+        "source_box": [
+          1129,
+          10,
+          1212,
+          109
+        ]
+      },
+      {
+        "file": "item_heart.png",
+        "source_box": [
+          1203,
+          10,
+          1297,
+          109
+        ]
+      },
+      {
+        "file": "item_star.png",
+        "source_box": [
+          1288,
+          10,
+          1378,
+          109
+        ]
+      },
+      {
+        "file": "item_diamond_blue.png",
+        "source_box": [
+          1044,
+          104,
+          1135,
+          205
+        ]
+      },
+      {
+        "file": "item_potion_green.png",
+        "source_box": [
+          1129,
+          104,
+          1212,
+          207
+        ]
+      },
+      {
+        "file": "item_key.png",
+        "source_box": [
+          1204,
+          104,
+          1295,
+          207
+        ]
+      },
+      {
+        "file": "item_shield.png",
+        "source_box": [
+          1288,
+          104,
+          1378,
+          207
+        ]
+      },
+      {
+        "file": "item_bag.png",
+        "source_box": [
+          1044,
+          201,
+          1137,
+          326
+        ]
+      },
+      {
+        "file": "item_mushroom.png",
+        "source_box": [
+          1127,
+          201,
+          1213,
+          326
+        ]
+      },
+      {
+        "file": "item_chest.png",
+        "source_box": [
+          1200,
+          201,
+          1300,
+          326
+        ]
+      },
+      {
+        "file": "item_orb_blue.png",
+        "source_box": [
+          1287,
+          201,
+          1378,
+          326
+        ]
+      }
+    ]
+  },
+  "summary": {
+    "character_frames": 13,
+    "background_layers": 4,
+    "terrain_and_props": 13,
+    "item_icons": 12,
+    "total_individual_sprites": 42
+  }
+}
