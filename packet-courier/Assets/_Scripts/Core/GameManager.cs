@@ -53,10 +53,32 @@ public class GameManager : MonoBehaviour
         LoadSegment(currentSegmentIndex);
     }
 
+    public static GameManager Ensure()
+    {
+        if (Instance != null) return Instance;
+        var go = new GameObject("GameManager");
+        return go.AddComponent<GameManager>();
+    }
+
+    public void RetrySegment()
+    {
+        dataBitsCollectedThisRun = 0;
+        isInRun = true;
+        state = GameState.Run;
+        LoadSegment(currentSegmentIndex);
+    }
+
+    public void ReturnToMenu()
+    {
+        isInRun = false;
+        state = GameState.Menu;
+        LoadOrReload("Menu");
+    }
+
     public void LoadSegment(int segmentIndex)
     {
         string sceneName = $"World{currentWorldIndex + 1}_Segment{segmentIndex + 1}";
-        SceneManager.LoadScene(sceneName);
+        LoadOrReload(sceneName);
     }
 
     public void OnSegmentComplete()
@@ -86,7 +108,7 @@ public class GameManager : MonoBehaviour
             worldsUnlocked[currentWorldIndex + 1] = true;
 
         state = GameState.Hub;
-        SceneManager.LoadScene("Hub");
+        LoadOrReload("Hub");
     }
 
     public void OnPlayerDeath()
@@ -98,7 +120,26 @@ public class GameManager : MonoBehaviour
 
         isInRun = false;
         state = GameState.GameOver;
-        SceneManager.LoadScene("GameOver");
+        LoadOrReload("GameOver");
+    }
+
+    private void LoadOrReload(string sceneName)
+    {
+        if (SceneExists(sceneName))
+            SceneManager.LoadScene(sceneName);
+        else
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private static bool SceneExists(string name)
+    {
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+        {
+            string path = SceneUtility.GetScenePathByBuildIndex(i);
+            if (path.EndsWith("/" + name + ".unity", System.StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
     }
 
     public void AddDataBits(int amount)
