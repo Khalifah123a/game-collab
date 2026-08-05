@@ -112,43 +112,77 @@ public static partial class EditorGenerator
     private static void CreatePlayerAnimatorController()
     {
         string path = PrefabRoot + "/PlayerAnimator.controller";
-        if (AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(path) == null)
-        {
-            var controller = UnityEditor.Animations.AnimatorController.CreateAnimatorControllerAtPath(path);
-            UnityEditor.Animations.AnimatorControllerLayer layer = controller.layers[0];
+        var controller = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(path);
+        if (controller == null)
+            controller = UnityEditor.Animations.AnimatorController.CreateAnimatorControllerAtPath(path);
 
+        UnityEditor.Animations.AnimatorControllerLayer layer = controller.layers[0];
+        UnityEditor.Animations.AnimatorStateMachine sm = layer.stateMachine;
+
+        if (!HasParameter(controller, "isMoving"))
             controller.AddParameter("isMoving", AnimatorControllerParameterType.Bool);
+        if (!HasParameter(controller, "speedMultiplier"))
             controller.AddParameter("speedMultiplier", AnimatorControllerParameterType.Float);
+        if (!HasParameter(controller, "facing"))
             controller.AddParameter("facing", AnimatorControllerParameterType.Float);
 
-            AnimationClip idleClip = new AnimationClip { frameRate = 10f, name = "PlayerIdle" };
-            SetSpriteCurve(idleClip, new Sprite[] { LoadWalkSprite(0) ?? LoadOrCreateSprite("player_placeholder", 16, 16, Color.cyan, 32f) });
-            SetLoop(idleClip);
+        foreach (var sub in AssetDatabase.LoadAllAssetsAtPath(path))
+        {
+            if (sub is AnimationClip clip && (clip.name == "PlayerIdle" || clip.name == "PlayerRun"))
+                UnityEngine.Object.DestroyImmediate(sub, true);
+        }
 
-            Sprite[] walkSprites = new Sprite[5];
-            for (int i = 0; i < 5; i++)
-                walkSprites[i] = LoadWalkSprite(i) ?? LoadOrCreateSprite("player_placeholder", 16, 16, Color.cyan, 32f);
-            AnimationClip runClip = new AnimationClip { frameRate = 10f, name = "PlayerRun" };
-            SetSpriteCurve(runClip, walkSprites);
-            SetLoop(runClip);
+        AnimationClip idleClip = new AnimationClip { frameRate = 10f, name = "PlayerIdle" };
+        SetSpriteCurve(idleClip, new Sprite[] { LoadWalkSprite(0) ?? LoadOrCreateSprite("player_placeholder", 16, 16, Color.cyan, 32f) });
+        SetLoop(idleClip);
+        AssetDatabase.AddObjectToAsset(idleClip, controller);
 
-            var idle = layer.stateMachine.AddState("Idle");
-            idle.motion = idleClip;
-            var run = layer.stateMachine.AddState("Run");
-            run.motion = runClip;
+        Sprite[] walkSprites = new Sprite[5];
+        for (int i = 0; i < 5; i++)
+            walkSprites[i] = LoadWalkSprite(i) ?? LoadOrCreateSprite("player_placeholder", 16, 16, Color.cyan, 32f);
+        AnimationClip runClip = new AnimationClip { frameRate = 10f, name = "PlayerRun" };
+        SetSpriteCurve(runClip, walkSprites);
+        SetLoop(runClip);
+        AssetDatabase.AddObjectToAsset(runClip, controller);
 
+        var idle = FindOrAddState(sm, "Idle");
+        idle.motion = idleClip;
+        var run = FindOrAddState(sm, "Run");
+        run.motion = runClip;
+
+        if (idle.transitions.Length == 0)
+        {
             var idleToRun = idle.AddTransition(run);
             idleToRun.hasExitTime = false;
             idleToRun.duration = 0f;
             idleToRun.AddCondition(AnimatorConditionMode.If, 0f, "isMoving");
+        }
 
+        if (run.transitions.Length == 0)
+        {
             var runToIdle = run.AddTransition(idle);
             runToIdle.hasExitTime = false;
             runToIdle.duration = 0f;
             runToIdle.AddCondition(AnimatorConditionMode.IfNot, 0f, "isMoving");
-
-            AssetDatabase.SaveAssets();
         }
+
+        AssetDatabase.SaveAssets();
+    }
+
+    private static bool HasParameter(UnityEditor.Animations.AnimatorController controller, string name)
+    {
+        for (int i = 0; i < controller.parameters.Length; i++)
+            if (controller.parameters[i].name == name)
+                return true;
+        return false;
+    }
+
+    private static UnityEditor.Animations.AnimatorState FindOrAddState(UnityEditor.Animations.AnimatorStateMachine sm, string name)
+    {
+        foreach (var child in sm.states)
+            if (child.state.name == name)
+                return child.state;
+        return sm.AddState(name);
     }
 
     private static void SetSpriteCurve(AnimationClip clip, params Sprite[] frames)

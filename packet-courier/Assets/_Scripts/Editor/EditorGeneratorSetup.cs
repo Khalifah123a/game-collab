@@ -131,12 +131,13 @@ public static partial class EditorGenerator
         EnsureInputManager();
         EnsureCamera();
         EnsureLevelManager();
+        EnsureGameManager();
         EnsureHUD();
 
         AssetDatabase.Refresh();
         EditorUtility.DisplayDialog(
             "Packet Courier",
-            "Scene disiapkan: InputManager, Main Camera (CameraFollow), LevelManager, dan HUD.\nDrag prefab dari Assets/_Prefabs/ untuk membangun level.",
+            "Scene disiapkan: InputManager, Main Camera (CameraFollow), LevelManager, GameManager, dan HUD.\nDrag prefab dari Assets/_Prefabs/ untuk membangun level.",
             "OK"
         );
     }
@@ -177,6 +178,14 @@ public static partial class EditorGenerator
         lm.worldIndex = 0;
         lm.segmentIndex = 0;
         lm.levelDrainRate = 1f;
+    }
+
+    private static void EnsureGameManager()
+    {
+        if (Object.FindObjectOfType<GameManager>() != null) return;
+
+        var go = new GameObject("GameManager");
+        go.AddComponent<GameManager>();
     }
 
     private static void EnsureHUD()
