@@ -1,12 +1,12 @@
-# Packet Courier — Vertical Slice Implementation Plan
+﻿# Packet Courier â€” Vertical Slice Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Make Packet Courier playable end-to-end (`Menu → World1_Segment1..3 → Hub`, with `GameOver` + retry) by adding a text-layout level generator, three tutorial levels, menu/game-over/hub scenes, and build-settings registration.
+**Goal:** Make Packet Courier playable end-to-end (`Menu â†’ World1_Segment1..3 â†’ Hub`, with `GameOver` + retry) by adding a text-layout level generator, three tutorial levels, menu/game-over/hub scenes, and build-settings registration.
 
 **Architecture:** Extend the existing `EditorGenerator` partial class (in `Assets/_Scripts/Editor/`) with a new file `EditorLevelGenerator.cs` that parses `Assets/_Levels/*.txt` ASCII grids into prefab instances, composes scenes with the existing `Ensure*` helpers, and registers them in `EditorBuildSettings`. Three small runtime UI scripts (`MenuUI`, `GameOverUI`, `HubUI`) drive the flow via three small additions to `GameManager`.
 
-**Tech Stack:** Unity 2022.3.20f1, C#, UnityEditor batch mode (`-executeMethod`) for verification. No test framework in this project — verification is batch-mode generation + filesystem/build-settings assertions.
+**Tech Stack:** Unity 2022.3.20f1, C#, UnityEditor batch mode (`-executeMethod`) for verification. No test framework in this project â€” verification is batch-mode generation + filesystem/build-settings assertions.
 
 ## Global Constraints
 
@@ -16,8 +16,8 @@
 - Prefab paths (exact names from `Assets/_Prefabs/`): `Ground`, `Platform_OneWay`, `Platform_Moving`, `Spike`, `Enemy_Patrol`, `Laser_Beam`, `Firewall_Gate`, `Checkpoint_TCP`, `DataBit`, `Snippet`, `ServerB_Goal`, `Player`, `PlayerAnimator.controller`
 - Level scene names exactly: `World1_Segment1`, `World1_Segment2`, `World1_Segment3` (GameManager builds these from `LoadSegment`); meta scenes exactly: `Menu`, `Hub`, `GameOver`
 - Build settings order must be: `Menu`, `World1_Segment1`, `World1_Segment2`, `World1_Segment3`, `Hub`, `GameOver`
-- Do NOT call `EditorUtility.DisplayDialog` in batch mode (can hang) — guard with `if (!Application.isBatchMode)`
-- `EditorBuildSettings.asset` currently has `m_Scenes: []` — must end up with the 6 entries above
+- Do NOT call `EditorUtility.DisplayDialog` in batch mode (can hang) â€” guard with `if (!Application.isBatchMode)`
+- `EditorBuildSettings.asset` currently has `m_Scenes: []` â€” must end up with the 6 entries above
 - All new code must compile against C# without `using UnityEditor;` in runtime scripts (runtime scripts use `UnityEngine` only)
 
 ---
@@ -28,7 +28,7 @@
 
 **Interfaces:**
 - Consumes: existing private `LoadOrReload(string)` and `LoadSegment(int)` (already in file)
-- Produces: `public static GameManager Ensure()`, `public void RetrySegment()`, `public void ReturnToMenu()` — used by Task 4 UI scripts
+- Produces: `public static GameManager Ensure()`, `public void RetrySegment()`, `public void ReturnToMenu()` â€” used by Task 4 UI scripts
 
 - [ ] **Step 1: Add the three methods**
 
@@ -83,7 +83,7 @@ git commit -m "feat: GameManager Ensure/RetrySegment/ReturnToMenu for UI flow"
 
 **Interfaces:**
 - Consumes: nothing (pure data)
-- Produces: the `.txt` files Task 3 parses. Format: one row per line, cell `(col, row)` → world `(col, -row)`. Symbols: `#`=Ground, `-`=Platform_OneWay, `=`=Platform_Moving, `S`=Spike, `E`=Enemy_Patrol, `L`=Laser_Beam, `P`=Player (spawn), `G`=ServerB_Goal, `B`=DataBit, `N`=Snippet, `C`=Checkpoint_TCP, `F<port>`=Firewall_Gate (e.g. `F22`, `F443`), ` `=empty. `F<port>` consumes multiple characters but occupies a single cell column.
+- Produces: the `.txt` files Task 3 parses. Format: one row per line, cell `(col, row)` â†’ world `(col, -row)`. Symbols: `#`=Ground, `-`=Platform_OneWay, `=`=Platform_Moving, `S`=Spike, `E`=Enemy_Patrol, `L`=Laser_Beam, `P`=Player (spawn), `G`=ServerB_Goal, `B`=DataBit, `N`=Snippet, `C`=Checkpoint_TCP, `F<port>`=Firewall_Gate (e.g. `F22`, `F443`), ` `=empty. `F<port>` consumes multiple characters but occupies a single cell column.
 
 - [ ] **Step 1: Create `World1_Segment1.txt`** ("Handshake", no hazards, teaches move/jump/dash)
 
@@ -95,12 +95,12 @@ Each line is exactly 46 chars. `#` fills row 10 (ground), `P` at col 1, `C` at c
                                               
                                               
                                               
-                B                            B
-               ---                           
-      B       ---                B            
-     ---                 ---    ---    ---   G
-  P                     C                    
-##############################################
+                                              
+                B                    B        
+     ---  ---  ---                            
+      B                    B                  
+                          ---       ---     G 
+ P                    C                       
 ```
 
 Verify each row is 46 chars; the four content rows above are: `B` at col 16 and col 37; platforms at cols 5-7, 10-12, 15-17, 26-28, 36-38; `B` at col 6 and col 27; `P` at col 1, `C` at col 22; `G` at col 44.
@@ -115,11 +115,11 @@ Each line is exactly 46 chars. `#` fills row 10, `P` at col 1, `C` at col 9 (bef
                                               
                                               
                                               
-                         B                  
-                        ---                  
-                         N         E         
-                            ---      ---     
- P       C           SSS                     
+                         B                    
+                        ---                   
+                             N      E         
+                            ---    ---     G  
+ P       C           SSS                      
 ##############################################
 ```
 
@@ -135,11 +135,11 @@ Each line is exactly 48 chars. `#` fills row 10, `P` at col 1. Gate 1 `F22` at c
                                                 
                                                 
                                                 
-                B             B         B      
-               ---           ---              B
-                         N    E          --- G 
-                       ---         ---    ---  
- P      F22     L      F443                    
+            B                    B      B       
+           ---       ---           N     B      
+                               E          --- G 
+                              ---     ---       
+ P      F22      L       F443                   
 ################################################
 ```
 
@@ -159,7 +159,7 @@ git commit -m "feat: World1 level layouts (text grids)"
 - Create: `packet-courier/Assets/_Scripts/Editor/EditorLevelGenerator.cs`
 
 **Interfaces:**
-- Consumes: `EditorGenerator.PrefabRoot` (private const), `EditorGenerator.EnsureFolder(string)` (private static), `EditorGenerator.EnsureInputManager/EnsureCamera/EnsureLevelManager/EnsureHUD` (private static, defined in `EditorGeneratorSetup.cs`) — all reachable because this file declares the same `partial class EditorGenerator`. Consumes the `Assets/_Levels/*.txt` files from Task 2 and the prefabs from `Assets/_Prefabs/`.
+- Consumes: `EditorGenerator.PrefabRoot` (private const), `EditorGenerator.EnsureFolder(string)` (private static), `EditorGenerator.EnsureInputManager/EnsureCamera/EnsureLevelManager/EnsureHUD` (private static, defined in `EditorGeneratorSetup.cs`) â€” all reachable because this file declares the same `partial class EditorGenerator`. Consumes the `Assets/_Levels/*.txt` files from Task 2 and the prefabs from `Assets/_Prefabs/`.
 - Produces: `public static void GenerateLevelScenes()` (menu item `Tools/Packet Courier/Generate Level Scenes`) which builds the 3 level scenes into `Assets/_Scenes/` and registers them (and any other existing scene files there) in `EditorBuildSettings`. Task 5 will extend this method.
 
 - [ ] **Step 1: Write the file**
@@ -675,14 +675,14 @@ Expected: 0 missing, 0 compile errors, 6 build entries.
 
 - [ ] **Step 3: Manual playtest (interactive, by user)**
 
-1. Open Unity → `Tools > Packet Courier > Generate Prefabs` (regenerates the fixed animator), then `Tools > Packet Courier > Generate Level Scenes`.
+1. Open Unity â†’ `Tools > Packet Courier > Generate Prefabs` (regenerates the fixed animator), then `Tools > Packet Courier > Generate Level Scenes`.
 2. Open `Assets/_Scenes/Menu.unity`, press Play. Click **Start Run**.
-3. Play through Segment 1 (no hazards) → Segment 2 (toggle encrypted before spikes) → Segment 3 (switch ports Q/E at the gates, jump over the laser from the platform) → land in Hub.
-4. Die deliberately in a segment → GameOver appears → **Retry Segment** reloads the same segment; **Back to Menu** works.
+3. Play through Segment 1 (no hazards) â†’ Segment 2 (toggle encrypted before spikes) â†’ Segment 3 (switch ports Q/E at the gates, jump over the laser from the platform) â†’ land in Hub.
+4. Die deliberately in a segment â†’ GameOver appears â†’ **Retry Segment** reloads the same segment; **Back to Menu** works.
 5. Confirm the player animation plays (regression check).
 
 ## Self-Review
 
-- **Spec coverage:** Every spec section maps to a task — generator + tile set (T3), level content (T2), UI scripts (T4), meta scenes + build order (T5), GameManager API (T1), end-to-end verification (T6). The "reuse Ensure* helpers" requirement is satisfied by T3 calling `EnsureInputManager/EnsureCamera/EnsureLevelManager/EnsureHUD`. The `Menu` scene creates GameManager at runtime via `GameManager.Ensure()` (spec §GameManager additions).
+- **Spec coverage:** Every spec section maps to a task â€” generator + tile set (T3), level content (T2), UI scripts (T4), meta scenes + build order (T5), GameManager API (T1), end-to-end verification (T6). The "reuse Ensure* helpers" requirement is satisfied by T3 calling `EnsureInputManager/EnsureCamera/EnsureLevelManager/EnsureHUD`. The `Menu` scene creates GameManager at runtime via `GameManager.Ensure()` (spec Â§GameManager additions).
 - **Placeholder scan:** No TBD/TODO; every code step has full source. The only intentional data is in the `.txt` layouts, which are given verbatim.
 - **Type consistency:** `Ensure()` / `RetrySegment()` / `ReturnToMenu()` signatures in T1 match usage in T4. `BuildMetaScene(string, System.Type)` in T5 matches calls with `typeof(MenuUI)` etc. `RegisterBuildSettings()` is defined once in T3 and reused in T5 unchanged. Gate parsing uses `Gate_Firewall.requiredPort` (verified field). Prefab paths use verified asset names.
