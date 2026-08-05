@@ -346,6 +346,7 @@
 "Assets/Platformer2DAssetPack/Editor/PlatformerAssetPackTools.cs"
 "Assets/_Scripts/Editor/EditorGenerator.cs"
 "Assets/_Scripts/Editor/EditorGeneratorSetup.cs"
+"Assets/_Scripts/Editor/EditorLevelGenerator.cs"
 -langversion:9.0
 
 /deterministic

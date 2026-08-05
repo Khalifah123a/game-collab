@@ -1,6 +1,6 @@
 m_ProjectFiles:
   m_ManifestFileStatus:
-    m_FilePath: C:/Users/AXIOO/packet-courier/Packages/manifest.json
+    m_FilePath: C:/Users/AXIOO/game-collab/packet-courier/Packages/manifest.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
@@ -8,7 +8,7 @@ m_ProjectFiles:
       ticks: 639214086015178963
     m_Hash: 196387732
   m_LockFileStatus:
-    m_FilePath: C:/Users/AXIOO/packet-courier/Packages/packages-lock.json
+    m_FilePath: C:/Users/AXIOO/game-collab/packet-courier/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
@@ -19,7 +19,7 @@ m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
   m_LocalFileStatus: []
-m_ProjectPath: C:/Users/AXIOO/packet-courier/Packages
+m_ProjectPath: C:/Users/AXIOO/game-collab/packet-courier/Packages
 m_EditorVersion: 2022.3.20f1 (61c2feb0970d)
 m_ResolvedPackages:
 - packageId: com.unity.2d.sprite@1.0.0
@@ -27,7 +27,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.2d.sprite@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.2d.sprite@1.0.0
   assetPath: Packages/com.unity.2d.sprite
   name: com.unity.2d.sprite
   displayName: 2D Sprite
@@ -85,7 +85,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.2d.tilemap@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.2d.tilemap@1.0.0
   assetPath: Packages/com.unity.2d.tilemap
   name: com.unity.2d.tilemap
   displayName: 2D Tilemap Editor
@@ -158,7 +158,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.7.0
   source: 1
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.inputsystem@1.7.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.inputsystem@1.7.0
   assetPath: Packages/com.unity.inputsystem
   name: com.unity.inputsystem
   displayName: Input System
@@ -314,7 +314,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.ugui@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.ugui@1.0.0
   assetPath: Packages/com.unity.ugui
   name: com.unity.ugui
   displayName: Unity UI
@@ -389,7 +389,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.animation@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.animation@1.0.0
   assetPath: Packages/com.unity.modules.animation
   name: com.unity.modules.animation
   displayName: Animation
@@ -444,7 +444,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.audio@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.audio@1.0.0
   assetPath: Packages/com.unity.modules.audio
   name: com.unity.modules.audio
   displayName: Audio
@@ -499,7 +499,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.imageconversion@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.imageconversion@1.0.0
   assetPath: Packages/com.unity.modules.imageconversion
   name: com.unity.modules.imageconversion
   displayName: Image Conversion
@@ -555,7 +555,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.physics2d@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.physics2d@1.0.0
   assetPath: Packages/com.unity.modules.physics2d
   name: com.unity.modules.physics2d
   displayName: Physics 2D
@@ -610,7 +610,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.uielements@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.uielements@1.0.0
   assetPath: Packages/com.unity.modules.uielements
   name: com.unity.modules.uielements
   displayName: UIElements
@@ -677,7 +677,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.ui@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.ui@1.0.0
   assetPath: Packages/com.unity.modules.ui
   name: com.unity.modules.ui
   displayName: UI
@@ -732,7 +732,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.imgui@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.imgui@1.0.0
   assetPath: Packages/com.unity.modules.imgui
   name: com.unity.modules.imgui
   displayName: IMGUI
@@ -787,7 +787,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.jsonserialize@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.jsonserialize@1.0.0
   assetPath: Packages/com.unity.modules.jsonserialize
   name: com.unity.modules.jsonserialize
   displayName: JSONSerialize
@@ -842,7 +842,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
-  resolvedPath: C:\Users\AXIOO\packet-courier\Library\PackageCache\com.unity.modules.tilemap@1.0.0
+  resolvedPath: C:\Users\AXIOO\game-collab\packet-courier\Library\PackageCache\com.unity.modules.tilemap@1.0.0
   assetPath: Packages/com.unity.modules.tilemap
   name: com.unity.modules.tilemap
   displayName: Tilemap

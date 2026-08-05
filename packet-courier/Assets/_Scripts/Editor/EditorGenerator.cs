@@ -84,7 +84,11 @@ public static partial class EditorGenerator
     {
         string path = $"{ArtRoot}/{name}.png";
         Sprite existing = AssetDatabase.LoadAssetAtPath<Sprite>(path);
-        if (existing != null) return existing;
+        if (existing != null)
+        {
+            EnsureFullRectMesh(path);
+            return existing;
+        }
 
         Texture2D tex = new Texture2D(w, h, TextureFormat.RGBA32, false);
         for (int x = 0; x < w; x++)
@@ -102,11 +106,20 @@ public static partial class EditorGenerator
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
             importer.filterMode = FilterMode.Point;
+            importer.meshType = SpriteMeshType.FullRect;
             importer.spritePixelsPerUnit = ppu;
             importer.SaveAndReimport();
         }
 
         return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+    }
+
+    private static void EnsureFullRectMesh(string path)
+    {
+        if (AssetImporter.GetAtPath(path) is not TextureImporter importer) return;
+        if (importer.meshType == SpriteMeshType.FullRect) return;
+        importer.meshType = SpriteMeshType.FullRect;
+        importer.SaveAndReimport();
     }
 
     private static void CreatePlayerAnimatorController()
