@@ -38,6 +38,7 @@ public static partial class EditorGenerator
 
         EnsureFolder(ScenesRoot);
         BuildLevelScenes();
+        BuildMetaScenes();
         RegisterBuildSettings();
 
         AssetDatabase.SaveAssets();
@@ -167,6 +168,34 @@ public static partial class EditorGenerator
                 scenes.Add(new EditorBuildSettingsScene(path, true));
         }
         EditorBuildSettings.scenes = scenes.ToArray();
+    }
+
+    private static void BuildMetaScenes()
+    {
+        BuildMetaScene("Menu", typeof(MenuUI));
+        BuildMetaScene("GameOver", typeof(GameOverUI));
+        BuildMetaScene("Hub", typeof(HubUI));
+    }
+
+    private static void BuildMetaScene(string sceneName, System.Type uiComponent)
+    {
+        string scenePath = $"{ScenesRoot}/{sceneName}.unity";
+
+        Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        EnsureEventSystem();
+        var go = new GameObject(sceneName);
+        go.AddComponent(uiComponent);
+
+        if (!EditorSceneManager.SaveScene(scene, scenePath))
+            Debug.LogError($"[EditorLevelGenerator] Gagal menyimpan scene: {scenePath}");
+    }
+
+    private static void EnsureEventSystem()
+    {
+        if (Object.FindObjectOfType<UnityEngine.EventSystems.EventSystem>() != null) return;
+        var go = new GameObject("EventSystem");
+        go.AddComponent<UnityEngine.EventSystems.EventSystem>();
+        go.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
     }
 }
 #endif
