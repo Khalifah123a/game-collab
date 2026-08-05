@@ -6,8 +6,19 @@ public class HubUI : MonoBehaviour
     {
         var canvas = CreateCanvas();
         CreateLabel(canvas.transform, "RUN COMPLETE", new Vector2(0.3f, 0.7f), new Vector2(0.7f, 0.85f), 34);
-        CreateLabel(canvas.transform, "World 1 cleared. World 2 locked.", new Vector2(0.3f, 0.58f), new Vector2(0.7f, 0.66f), 16);
+        CreateLabel(canvas.transform, HubSubtitle(), new Vector2(0.3f, 0.58f), new Vector2(0.7f, 0.66f), 16);
         CreateButton(canvas.transform, "Back to Menu", new Vector2(0.4f, 0.3f), new Vector2(0.6f, 0.4f), () => GameManager.Instance?.ReturnToMenu());
+    }
+
+    private static string HubSubtitle()
+    {
+        var gm = GameManager.Instance;
+        if (gm == null) return "Run complete.";
+
+        int cleared = gm.currentWorldIndex + 1;
+        if (cleared + 1 <= gm.worldsUnlocked.Length)
+            return $"World {cleared} cleared. World {cleared + 1} unlocked.";
+        return $"World {cleared} cleared. All worlds unlocked.";
     }
 
     private static Canvas CreateCanvas()
