@@ -95,12 +95,12 @@ Each line is exactly 46 chars. `#` fills row 10 (ground), `P` at col 1, `C` at c
                                               
                                               
                                               
-                                              
                 B                    B        
      ---  ---  ---                            
       B                    B                  
                           ---       ---     G 
  P                    C                       
+##############################################
 ```
 
 Verify each row is 46 chars; the four content rows above are: `B` at col 16 and col 37; platforms at cols 5-7, 10-12, 15-17, 26-28, 36-38; `B` at col 6 and col 27; `P` at col 1, `C` at col 22; `G` at col 44.
