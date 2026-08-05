@@ -23,7 +23,7 @@ This design adds the missing playable content: real levels, menu, game-over, hub
 - New menu item: **`Tools > Packet Courier > Generate Level Scenes`**.
 - Level definitions are plain-text files in `Assets/_Levels/`, one per level, e.g. `World1_Segment1.txt`. Each line is one row of the grid; each character is one tile cell of 1 world unit. Cell `(col, row)` maps to world position `(col, -row)`.
 - On generate, `EditorGenerator` (existing partial class) parses every `*.txt` in `Assets/_Levels/`, instantiates prefabs via `PrefabUtility.InstantiatePrefab` (keeps the original prefab reference — no duplication), parents them under a `LevelContent` root, and composes the scene.
-- Every generated scene contains: `InputManager`, orthographic `Camera` + `CameraFollow`, `LevelManager` (with `worldIndex`, `segmentIndex`, `playerSpawn`, `serverBPoint` wired), `LevelContent` root. `GameManager` is NOT added — it is a `DontDestroyOnLoad` singleton carried over from the first scene.
+- Every generated scene contains: `InputManager`, orthographic `Camera` + `CameraFollow`, `LevelManager` (with `worldIndex`, `segmentIndex`, `playerSpawn`, `serverBPoint` wired), `LevelContent` root. These reuse the existing `EnsureInputManager` / `EnsureCamera` / `EnsureLevelManager` helpers already in `EditorGeneratorSetup`. `GameManager` is NOT added — it is a `DontDestroyOnLoad` singleton created by `MenuUI` (via `GameManager.Ensure()`) at run start.
 - Generated scenes are written to `Assets/_Scenes/` and appended to `EditorBuildSettings.scenes` (idempotent: regenerate skips already-registered scenes).
 - Regeneration is destructive: the scene file is recreated from the layout text, so levels are edited by editing the `.txt` and re-running the menu item.
 
@@ -33,7 +33,7 @@ This design adds the missing playable content: real levels, menu, game-over, hub
 |------|--------|-------|
 | `#` | `Ground` | static solid ground |
 | `-` | `Platform_OneWay` | one-way platform |
-| `=` | `Moving_Platform` | moving platform |
+| `=` | `Platform_Moving` | moving platform |
 | `S` | `Spike` | InstaKill unless encrypted |
 | `E` | `Enemy_Patrol` | patrol enemy |
 | `L` | `Laser_Beam` | laser hazard |
@@ -42,10 +42,10 @@ This design adds the missing playable content: real levels, menu, game-over, hub
 | `B` | `DataBit` | collectible |
 | `N` | `Snippet` | TTL heal |
 | `C` | `Checkpoint_TCP` | interact-to-activate, TTL bonus |
-| `F<port>` | `Gate_Firewall` | `requiredPort = <port>`, plaintext ok; e.g. `F80`, `F443` |
+| `F<port>` | `Firewall_Gate` | `requiredPort = <port>`, plaintext ok; e.g. `F80`, `F443` |
 | ` ` | — | empty cell |
 
-Gate ports are encoded in the symbol (`F80`, `F443`). Other hazard/prop configuration (enemy patrol speed, laser length) uses the prefab's existing defaults; tuning lives in the `.txt` layout, not new inspector knobs.
+Gate ports are encoded in the symbol (`F80`, `F443`). `F<port>` consumes multiple characters but occupies a single cell column (the digits belong to the same token; columns after the gate are unaffected). Other hazard/prop configuration (enemy patrol speed, laser length) uses the prefab's existing defaults; tuning lives in the `.txt` layout, not new inspector knobs.
 
 ### Gameplay loop / flow
 
@@ -62,7 +62,15 @@ Gate ports are encoded in the symbol (`F80`, `F443`). Other hazard/prop configur
 - `HubUI` — Back to Menu; shows bits collected (from GameManager).
 - `EditorLevelGenerator` — the scene-builder logic (called by the new menu item in `EditorGenerator`).
 
-All three UI scripts follow existing patterns (singleton access to `GameManager.Instance`, no new input bindings — menu uses `OnMouseDown`/UI Buttons + legacy input).
+All three UI scripts follow existing patterns (singleton access to `GameManager.Instance`, no new input bindings — menu uses legacy input / `OnMouseDown`, consistent with the codebase).
+
+### GameManager additions (small, public API)
+
+`GameManager` already has `StartRun`, `LoadSegment`, `OnSegmentComplete`, `OnPlayerDeath`, `LoadOrReload` (private). The UI scenes (`Menu`/`GameOver`/`Hub`) never contain a GameManager object — the singleton persists via `DontDestroyOnLoad`. Three small public additions are needed so the UI scenes can drive the flow:
+
+- `public static GameManager Ensure()` — idempotent factory mirroring `InputManager.EnsureExists()`: returns `Instance` or creates a `GameManager` GameObject. Used by `MenuUI` before calling `StartRun`.
+- `public void RetrySegment()` — resets run state (`dataBitsCollectedThisRun = 0`, `isInRun = true`, `state = Run`) and calls `LoadSegment(currentSegmentIndex)` (segment index is unchanged by death).
+- `public void ReturnToMenu()` — sets `isInRun = false`, `state = Menu`, and `LoadOrReload("Menu")`.
 
 ## Scenes generated
 
@@ -98,7 +106,13 @@ Each segment targets roughly 30–60 seconds of play at plaintext speed (8 u/s) 
 
 ## Verification
 
-- Open project → `Tools > Packet Courier > Generate Level Scenes` completes with no errors; 6 scenes exist in `Assets/_Scenes/`; `EditorBuildSettings` has 6 entries.
+- Open project → `Tools > Packet Courier > Generate Level Scenes` completes with no errors; 6 scenes exist in `Assets/_Scenes/`; `EditorBuildSettings` has 6 entries with `Menu` at index 0.
 - Play from `Menu`: start run → play Segment 1→2→3 (spikes kill in plaintext, gates open on correct port, goal advances) → land in `Hub`.
 - Die in any segment → `GameOver` → Retry reloads same segment; Back to Menu works.
 - Player animation plays (regression check for the animator fix).
+
+## Self-review corrections (post-approval, incorporated)
+
+- Prefab names verified against `Assets/_Prefabs/`: `Firewall_Gate` (not `Gate_Firewall`), `Platform_Moving` (not `Moving_Platform`).
+- `GameManager` needs the three small public additions above; without them the UI scenes cannot load scenes (`LoadOrReload` is private) and `Menu` has no GameManager object.
+- Generated scenes reuse the existing `Ensure*` scene-composition helpers rather than duplicating camera/HUD setup.
