@@ -4,22 +4,26 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    public float acceleration = 100f;
-    public float groundDecel = 70f;
-    public float airDecel = 40f;
-    public float gravity = 100f;
-    public float maxFallSpeed = 30f;
+    public float acceleration = 1200f;
+    public float groundDecel = 900f;
+    public float airDecel = 600f;
+    public float gravity = 1500f;
+    public float maxFallSpeed = 500f;
 
     [Header("Jump")]
-    public float jumpForce = 22f;
+    public float jumpForce = 400f;
     public float coyoteTime = 0.067f;
     public float jumpBufferTime = 0.1f;
     private float _coyoteTimer;
     private float _jumpBufferTimer;
 
+    [Header("Air Jump")]
+    public int airJumpsAvailable = 1;
+    public int airJumpsLeft;
+
     [Header("Walljump")]
-    public float walljumpForceX = 18f;
-    public float walljumpForceY = 22f;
+    public float walljumpForceX = 300f;
+    public float walljumpForceY = 380f;
     public float wallClingTime = 0.5f;
     public float wallClingTimer;
     public int walljumpsAvailable = 1;
@@ -28,7 +32,7 @@ public class PlayerController : MonoBehaviour
     public float wallUnstickTimer;
 
     [Header("Dash")]
-    public float dashSpeed = 45f;
+    public float dashSpeed = 700f;
     public float dashDuration = 0.15f;
     public float dashCooldownTimer;
     public int airDashesLeft = 1;
@@ -36,7 +40,7 @@ public class PlayerController : MonoBehaviour
     public float dashGravityScale = 0.6f;
     public LayerMask dashBlockMask;
     [Header("Sprint")]
-    public float sprintSpeedMultiplier = 1.6f;
+    public float sprintSpeedMultiplier = 1.5f;
     public float sprintAnimMultiplier = 1.8f;
     public bool isSprinting;
 
@@ -46,8 +50,8 @@ public class PlayerController : MonoBehaviour
     public bool isGrounded;
 
     [Header("Wall Check")]
-    public Vector2 wallCheckSize = new Vector2(2, 14);
-    public float wallCheckOffset = 10f;
+    public Vector2 wallCheckSize = new Vector2(0.5f, 2f);
+    public float wallCheckOffset = 0.5f;
     public bool isOnWall;
     public int wallSide;
 
@@ -90,6 +94,7 @@ public class PlayerController : MonoBehaviour
         _mode = GetComponent<PlayerMode>();
         walljumpsLeft = walljumpsAvailable;
         airDashesLeft = 1;
+        airJumpsLeft = GetAirJumps();
     }
 
     private void Update()
@@ -142,6 +147,7 @@ public class PlayerController : MonoBehaviour
             _coyoteTimer = coyoteTime;
             walljumpsLeft = walljumpsAvailable;
             airDashesLeft = 1;
+            airJumpsLeft = GetAirJumps();
             _currentGround = hit;
         }
         else
@@ -205,6 +211,12 @@ public class PlayerController : MonoBehaviour
             if (isGrounded || _coyoteTimer > 0)
             {
                 DoJump(Vector2.up, jumpForce);
+                _coyoteTimer = 0;
+            }
+            else if (airJumpsLeft > 0 && !isOnWall)
+            {
+                DoJump(Vector2.up, jumpForce);
+                airJumpsLeft--;
                 _coyoteTimer = 0;
             }
             else if (isOnWall && wallClingTimer > 0 && walljumpsLeft > 0)
@@ -394,5 +406,10 @@ public class PlayerController : MonoBehaviour
     private float GetUpgradeBonus(GameManager.UpgradeType type)
     {
         return GameManager.Instance?.GetUpgradeLevel(type) ?? 0;
+    }
+
+    private int GetAirJumps()
+    {
+        return airJumpsAvailable + (int)GetUpgradeBonus(GameManager.UpgradeType.AirJump);
     }
 }

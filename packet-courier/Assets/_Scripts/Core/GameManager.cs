@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
         DashDistance, BaseSpeed, AirControl, DashCooldown,
         TTLMax, TTLDrainRate, EncryptedShield, RespawnTTL,
         SwitchCooldown, WalljumpHeight, WallClingTime, PowerUpDuration,
-        VisionRadius, PacketRadar, DangerOutline, SecretIndicator
+        VisionRadius, PacketRadar, DangerOutline, SecretIndicator, AirJump
     }
 
     private void Awake()
@@ -165,7 +165,7 @@ public class GameManager : MonoBehaviour
 
     public int GetUpgradeMaxLevel(UpgradeType type)
     {
-        int[] maxLevels = { 3, 3, 2, 2, 5, 3, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1 };
+        int[] maxLevels = { 3, 3, 2, 2, 5, 3, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1, 2 };
         return maxLevels[(int)type];
     }
 
@@ -202,7 +202,8 @@ public class GameManager : MonoBehaviour
             new[]{150, 350},                // VisionRadius
             new[]{500},                      // PacketRadar
             new[]{300},                      // DangerOutline
-            new[]{400}                       // SecretIndicator
+            new[]{400},                      // SecretIndicator
+            new[]{300, 500}                  // AirJump
         };
         int upgradeIdx = (int)type;
         var list = costs[upgradeIdx];

@@ -9,7 +9,7 @@ public class Laser_Beam : MonoBehaviour
 
     [Header("Damage")]
     public float damageAmount = 30f;
-    public float damageCooldown = 1f;
+    public float damageCooldown = 0.25f;
 
     [Header("Visual")]
     public SpriteRenderer beamSprite;
@@ -19,12 +19,16 @@ public class Laser_Beam : MonoBehaviour
     private Collider2D _collider;
     private float _timer;
     private float _damageTimer;
+    private bool _playerInside;
 
     private void Awake()
     {
         _collider = GetComponent<Collider2D>();
         if (beamSprite == null) beamSprite = GetComponent<SpriteRenderer>();
         _timer = -phaseOffset;
+
+        if (_collider != null)
+            _collider.isTrigger = true;
     }
 
     private void Update()
@@ -39,18 +43,34 @@ public class Laser_Beam : MonoBehaviour
     private void SetOn(bool on)
     {
         IsOn = on;
-        if (_collider) _collider.enabled = on;
-        if (beamSprite) beamSprite.enabled = on;
+        if (_collider != null)
+            _collider.enabled = on;
+        if (beamSprite != null)
+            beamSprite.enabled = on;
     }
 
-    private void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!IsOn) return;
-        if (!other.CompareTag("Player")) return;
+        if (other.CompareTag("Player"))
+            _playerInside = true;
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+            _playerInside = false;
+    }
+
+    private void FixedUpdate()
+    {
+        if (!IsOn || !_playerInside) return;
         if (Time.time < _damageTimer) return;
 
-        var health = other.GetComponent<PlayerHealth>();
-        if (health)
+        var player = FindObjectOfType<PlayerController>();
+        if (player == null) return;
+
+        var health = player.GetComponent<PlayerHealth>();
+        if (health != null)
         {
             health.TakeDamage(damageAmount, PlayerHealth.DamageType.TTLDamage);
             _damageTimer = Time.time + damageCooldown;

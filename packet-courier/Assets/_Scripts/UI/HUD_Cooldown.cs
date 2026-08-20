@@ -47,7 +47,7 @@ public class HUD_Cooldown : MonoBehaviour
         if (cooldownText)
         {
             bool ready = fill >= 1f;
-            cooldownText.text = ready ? "DASH" : "■";
+            cooldownText.text = ready ? "DASH" : "···";
             cooldownText.color = ready ? readyColor : cooldownColor;
         }
     }

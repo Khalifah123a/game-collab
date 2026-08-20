@@ -17,14 +17,14 @@ public class PlayerMode : MonoBehaviour
     public float lastSwitchTime;
 
     [Header("Mode Stats")]
-    public float plaintextSpeed = 8f;
-    public float encryptedSpeed = 5f;
-    public float plaintextDashDist = 7.5f;
-    public float encryptedDashDist = 5f;
+    public float plaintextSpeed = 10f;
+    public float encryptedSpeed = 6f;
+    public float plaintextDashDist = 10f;
+    public float encryptedDashDist = 7f;
     public float plaintextDashCooldown = 0.3f;
     public float encryptedDashCooldown = 0.5f;
     public float plaintextAirControl = 0.8f;
-    public float encryptedAirControl = 0.5f;
+    public float encryptedAirControl = 0.4f;
     public Vector2 plaintextHitbox = new Vector2(0.5f, 1f);
     public Vector2 encryptedHitbox = new Vector2(0.75f, 1.25f);
 

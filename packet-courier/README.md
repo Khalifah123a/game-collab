@@ -1,86 +1,69 @@
-# Packet Courier — Prototype Sprint 1
+# Packet Courier — Sprint 2: World 1 Playtest
 
-## Persiapan Unity
+## Sprint 2 Fixes & Changes
 
-1. Buka **Unity Hub** → **Add** → pilih folder `packet-courier/`
-2. Buka project (Unity 2022.3.x atau lebih baru)
-3. Jika ada dialog upgrade, klik **OK**
-
-## Cara Test Prototype
-
-### Opsi 1: Auto-Bootstrap (langsung Play)
-
-1. Di **Project window**, cari `_Scripts/PrototypeBootstrapper.cs`
-2. Drag ke **Hierarchy** (ke scene apa saja, atau scene kosong)
-3. **Save scene** sebagai `_Scenes/World1_Segment1`
-4. **File** → **Build Settings** → **Add Open Scenes**
-5. Tekan **Play**
-
-Prototype akan otomatis spawn:
-- Player (kotak cyan) dengan Rigidbody2D + collider
-- Ground (garis biru gelap) + 8 platform
-- 5 Data Bits (hijau) dan 1 Packet Snippet (magenta)
-- Server B (kuning) — sentuh untuk complete segment
-- HUD lengkap: TTL bar (atas), Dash cooldown (kiri), Mode + Port (kanan)
-
-### Opsi 2: Manual Build Scene
-
-1. Buat **GameObject** kosong di scene → beri nama `Bootstrapper`
-2. Add Component → **PrototypeBootstrapper**
-3. Atur `Spawn Player At Start = true`
-4. Drag `_Scripts/Player` components langsung ke GameObject player jika ingin kustom
-
-## Kontrol
-
-| Aksi | Keyboard | Touch |
+| Fix | File | Detail |
 |---|---|---|
-| Move | WASD / Arrow keys | Joystick kiri |
-| Jump | Space | Tombol kanan bawah |
-| Dash | Left Click / Z | Tombol dash |
-| Toggle Mode | Right Click / X | Tombol mode |
-| Port Next | E | Panah kanan port |
-| Port Prev | Q | Panah kiri port |
-| Interact | Enter / E | Hold di TCP node |
-| Power-Up | Left Shift | Tombol power |
+| Checkpoint dual input | `Level/Checkpoint_TCP.cs` | Removed raw `Input.GetButton("Submit")`, now uses only InputManager |
+| HUD dash text | `UI/HUD_Cooldown.cs` | Fixed corrupted character, now shows "···" while cooling |
+| Fan Vortex enemy | `Level/Fan_Vortex.cs` + Prefab | New push-field enemy (World 1 Seg 3) |
+| Movement tuned | `Player/PlayerController.cs` | acceleration 100→1200, jump 22→400, dash 45→700 |
+| Speed tuned | `Player/PlayerMode.cs` | plaintextSpeed 8→10, encryptedSpeed 5→6 |
+| Level layouts | `Assets/_Levels/` | Added more platforms, checkpoint, fan vortex |
 
-## Struktur Script
+## How to Test in Unity
 
-```
-Assets/_Scripts/
-├── Core/
-│   ├── GameManager.cs       — State game, upgrade, run, death
-│   └── InputManager.cs      — Keyboard + touch input
-├── Player/
-│   ├── PlayerController.cs  — Movement, dash, walljump
-│   ├── PlayerMode.cs        — Mode Plain/Enc, port toggle
-│   └── PlayerHealth.cs      — TTL system, damage
-├── Level/
-│   ├── LevelManager.cs      — Config per segment
-│   ├── Checkpoint_TCP.cs    — Hold-to-activate checkpoint
-│   ├── Gate_Firewall.cs     — Port + mode matching gate
-│   ├── Collectible_DataBit.cs    — +10 bits
-│   ├── Collectible_Snippet.cs    — +15 TTL
-│   ├── Hazard_Spike.cs      — Insta-kill / TTL damage
-│   └── ServerB_Goal.cs      — Trigger segment complete
-├── UI/
-│   ├── HUD_TTL.cs           — TTL progress bar (top)
-│   ├── HUD_Cooldown.cs      — Dash cooldown (vertical kiri)
-│   └── HUD_Mode.cs          — Mode, port, bits (kanan)
-└── PrototypeBootstrapper.cs — Auto-build scene saat Play
-```
+### Step 1: Regenerate Prefabs (one-time)
+1. Open project in Unity 2022.3.x
+2. **Tools > Packet Courier > Generate Prefabs**
+   - Creates `Fan_Vortex.prefab` and all other prefabs
+3. **Tools > Packet Courier > Generate Level Scenes**
+   - Rebuilds World1_Segment1-3 from updated layouts
 
-## Sprint 1 Scope
+### Step 2: Play Test
+1. Open **World1_Segment1** scene
+2. Press **Play**
 
-- [x] Player movement (move, jump, dash 8-dir, walljump)
-- [x] Mode toggle (Plaintext/Encrypted + stat switching)
-- [x] TTL system (drain, damage, heal)
-- [x] Port cycle (21→22→80→443→8080)
-- [x] HUD (TTL bar, dash cooldown vertical, mode/port/bits)
-- [x] Collectibles (Data Bits + Packet Snippet)
-- [x] Goal trigger (Server B → segment complete)
-- [ ] Gate Firewall (port matching)
-- [ ] TCP Checkpoint (hold to activate)
-- [ ] Enemy (Cursor, Process Zombie)
-- [ ] Hazard (Spike)
+### Controls
+| Key | Action |
+|---|---|
+| A/D or ←/→ | Move |
+| Space or W/↑ | Jump (walljump on contact) |
+| Left Ctrl or Mouse0 | Dash (8-directional) |
+| Left Alt or Mouse1 | Toggle Plaintext/Encrypted |
+| Q | Port backward |
+| E | Port forward |
+| Enter | Interact (hold at checkpoint) |
+| Left Shift | Sprint (while moving on ground) |
 
-**Next:** Sprint 2 — Enemy + full World 1 (3 segment)
+### World 1 Segment Overview
+
+**Seg 1 — Recycle Bin** (tutorial)
+- Flat ground, 3 Data Bits, 1 Checkpoint, 1 Snippet
+- Introduces: move, jump, dash, platform timing
+
+**Seg 2 — File Explorer** (vertical climb)
+- Spikes (SSS), Enemy patrol (E), Checkpoint (C), Snippet (N)
+- Introduces: enemy avoidance, spike hazards
+
+**Seg 3 — Network Tray** (puzzle + danger)
+- Firewall gates: F22 (port 22), F443 (port 443)
+- Laser beam (L), Moving platform (=), Fan Vortex (V)
+- Introduces: port matching, timed hazards, push fields
+
+## Known Test Items
+
+- [ ] Player movement feels snappy (not floaty)
+- [ ] Dash has satisfying impact
+- [ ] Walljump direction is intuitive
+- [ ] TTL drain creates urgency without frustration
+- [ ] Firewall gates give clear feedback on wrong port
+- [ ] Checkpoint hold-to-activate feels fair (0.5s)
+- [ ] Fan Vortex push is noticeable but not deadly
+- [ ] Laser timing is readable (on/off cycle)
+- [ ] Camera follows smoothly without jitter
+
+## Next: Sprint 3
+- World 2: LAN Party (first boss: Censor)
+- Enemy variants: Cursor, Process Zombie
+- Upgrade system polish (Hub UI)

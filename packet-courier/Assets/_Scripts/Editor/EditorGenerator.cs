@@ -30,6 +30,7 @@ public static partial class EditorGenerator
         CreateDataBitPrefab();
         CreateSnippetPrefab();
         CreateServerBGoalPrefab();
+        CreateFanVortexPrefab();
 
         AssetDatabase.Refresh();
         EditorUtility.DisplayDialog(
@@ -80,13 +81,14 @@ public static partial class EditorGenerator
         return AssetDatabase.LoadAssetAtPath<Sprite>($"{WalkSpriteDir}/{name}.png");
     }
 
-    private static Sprite LoadOrCreateSprite(string name, int w, int h, Color color, float ppu)
+    private static Sprite LoadOrCreateSprite(string name, int w, int h, Color color, float ppu, bool autoTiling = false)
     {
         string path = $"{ArtRoot}/{name}.png";
         Sprite existing = AssetDatabase.LoadAssetAtPath<Sprite>(path);
         if (existing != null)
         {
-            EnsureFullRectMesh(path);
+            if (!autoTiling)
+                EnsureFullRectMesh(path);
             return existing;
         }
 
@@ -106,8 +108,15 @@ public static partial class EditorGenerator
             importer.textureType = TextureImporterType.Sprite;
             importer.spriteImportMode = SpriteImportMode.Single;
             importer.filterMode = FilterMode.Point;
-            importer.meshType = SpriteMeshType.FullRect;
             importer.spritePixelsPerUnit = ppu;
+            if (!autoTiling)
+            {
+                var settings = new TextureImporterSettings();
+                importer.ReadTextureSettings(settings);
+                settings.spriteMeshType = SpriteMeshType.FullRect;
+                settings.spriteGenerateFallbackPhysicsShape = true;
+                importer.SetTextureSettings(settings);
+            }
             importer.SaveAndReimport();
         }
 
@@ -117,8 +126,11 @@ public static partial class EditorGenerator
     private static void EnsureFullRectMesh(string path)
     {
         if (AssetImporter.GetAtPath(path) is not TextureImporter importer) return;
-        if (importer.meshType == SpriteMeshType.FullRect) return;
-        importer.meshType = SpriteMeshType.FullRect;
+        var settings = new TextureImporterSettings();
+        importer.ReadTextureSettings(settings);
+        if (settings.spriteMeshType == SpriteMeshType.FullRect) return;
+        settings.spriteMeshType = SpriteMeshType.FullRect;
+        importer.SetTextureSettings(settings);
         importer.SaveAndReimport();
     }
 
@@ -268,7 +280,7 @@ public static partial class EditorGenerator
         col.autoTiling = true;
 
         var sr = go.AddComponent<SpriteRenderer>();
-        sr.sprite = LoadOrCreateSprite("ground", 1, 1, new Color(0.35f, 0.35f, 0.55f), 16f);
+        sr.sprite = LoadOrCreateSprite("ground", 1, 1, new Color(0.35f, 0.35f, 0.55f), 16f, autoTiling: true);
         sr.drawMode = SpriteDrawMode.Tiled;
         sr.size = new Vector2(1f, 1f);
         sr.sortingOrder = 0;
@@ -293,7 +305,7 @@ public static partial class EditorGenerator
         eff.useColliderMask = false;
 
         var sr = go.AddComponent<SpriteRenderer>();
-        sr.sprite = LoadOrCreateSprite("platform_oneway", 1, 1, new Color(0.3f, 0.6f, 1f), 16f);
+        sr.sprite = LoadOrCreateSprite("platform_oneway", 1, 1, new Color(0.3f, 0.6f, 1f), 16f, autoTiling: true);
         sr.drawMode = SpriteDrawMode.Tiled;
         sr.size = new Vector2(1f, 0.5f);
         sr.sortingOrder = 5;
@@ -327,12 +339,13 @@ public static partial class EditorGenerator
         go.layer = 0;
 
         var rb = go.AddComponent<Rigidbody2D>();
-        rb.gravityScale = 0f;
+        rb.bodyType = RigidbodyType2D.Kinematic;
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
-        var col = go.AddComponent<BoxCollider2D>();
-        col.size = new Vector2(0.8f, 0.8f);
+        var col = go.AddComponent<CircleCollider2D>();
+        col.isTrigger = true;
+        col.radius = 0.5f;
 
         go.AddComponent<Enemy_Patrol>();
 
@@ -379,7 +392,7 @@ public static partial class EditorGenerator
         go.AddComponent<Platform_Moving>();
 
         var sr = go.AddComponent<SpriteRenderer>();
-        sr.sprite = LoadOrCreateSprite("platform_moving", 2, 1, new Color(0.2f, 0.9f, 0.3f), 32f);
+        sr.sprite = LoadOrCreateSprite("platform_moving", 2, 1, new Color(0.2f, 0.9f, 0.3f), 32f, autoTiling: true);
         sr.drawMode = SpriteDrawMode.Tiled;
         sr.size = new Vector2(2f, 0.5f);
         sr.sortingOrder = 5;

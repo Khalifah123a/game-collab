@@ -94,7 +94,7 @@ public class PlayerHealth : MonoBehaviour
         if (isDead) return;
         isDead = true;
         OnPlayerDied?.Invoke();
-        GameManager.Instance?.OnPlayerDeath();
+        GameManager.Ensure().OnPlayerDeath();
     }
 
     private float GetUpgradedTTLMax()

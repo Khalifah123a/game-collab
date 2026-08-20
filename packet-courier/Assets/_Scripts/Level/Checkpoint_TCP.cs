@@ -13,6 +13,12 @@ public class Checkpoint_TCP : MonoBehaviour
 
     private float _holdTimer;
     private bool _playerInRange;
+    private InputManager _input;
+
+    private void Start()
+    {
+        _input = InputManager.Instance;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -33,7 +39,8 @@ public class Checkpoint_TCP : MonoBehaviour
     {
         if (isActivated || !_playerInRange) return;
 
-        if ((InputManager.Instance != null && InputManager.Instance.interactPressed) || Input.GetButton("Submit"))
+        bool interact = _input != null && _input.interactPressed;
+        if (interact)
         {
             _holdTimer += Time.deltaTime;
             if (_holdTimer >= activationTime)
@@ -55,6 +62,6 @@ public class Checkpoint_TCP : MonoBehaviour
         if (visualActive) visualActive.SetActive(true);
         if (visualInactive) visualInactive.SetActive(false);
 
-        if (InputManager.Instance != null) InputManager.Instance.ConsumeInteract();
+        _input?.ConsumeInteract();
     }
 }

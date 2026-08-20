@@ -321,6 +321,7 @@
 "Assets/_Scripts/Level/Collectible_DataBit.cs"
 "Assets/_Scripts/Level/Collectible_Snippet.cs"
 "Assets/_Scripts/Level/Enemy_Patrol.cs"
+"Assets/_Scripts/Level/Fan_Vortex.cs"
 "Assets/_Scripts/Level/Gate_Firewall.cs"
 "Assets/_Scripts/Level/Hazard_Spike.cs"
 "Assets/_Scripts/Level/Laser_Beam.cs"

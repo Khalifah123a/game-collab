@@ -32,11 +32,9 @@ public class LevelManager : MonoBehaviour
                 player.transform.position = playerSpawn.position;
         }
 
-        if (GameManager.Instance)
-        {
-            GameManager.Instance.currentWorldIndex = worldIndex;
-            GameManager.Instance.currentSegmentIndex = segmentIndex;
-        }
+        var gm = GameManager.Ensure();
+        gm.currentWorldIndex = worldIndex;
+        gm.currentSegmentIndex = segmentIndex;
     }
 
     public void CompleteSegment()

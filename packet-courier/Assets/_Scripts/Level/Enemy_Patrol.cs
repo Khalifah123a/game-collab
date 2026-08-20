@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Enemy_Patrol : MonoBehaviour
 {
     [Header("Patrol")]
@@ -15,6 +16,9 @@ public class Enemy_Patrol : MonoBehaviour
     public float damageAmount = 40f;
     public float damageCooldown = 1f;
 
+    [Header("Damage Trigger")]
+    public float damageTriggerRadius = 1.5f;
+
     public enum State { Patrol, Chase }
     [Header("State")]
     public State currentState = State.Patrol;
@@ -25,6 +29,7 @@ public class Enemy_Patrol : MonoBehaviour
     private Transform _player;
     private float _damageTimer;
     private SpriteRenderer _sprite;
+    private CircleCollider2D _damageTrigger;
 
     private void Awake()
     {
@@ -32,6 +37,22 @@ public class Enemy_Patrol : MonoBehaviour
         _target = _startPos + pointA;
         _rb = GetComponent<Rigidbody2D>();
         _sprite = GetComponent<SpriteRenderer>();
+
+        _rb.bodyType = RigidbodyType2D.Kinematic;
+        _rb.freezeRotation = true;
+        _rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        _damageTrigger = GetComponent<CircleCollider2D>();
+        if (_damageTrigger == null)
+        {
+            _damageTrigger = gameObject.AddComponent<CircleCollider2D>();
+            _damageTrigger.isTrigger = true;
+            _damageTrigger.radius = damageTriggerRadius;
+        }
+        else
+        {
+            _damageTrigger.isTrigger = true;
+        }
     }
 
     private void Start()
@@ -55,7 +76,8 @@ public class Enemy_Patrol : MonoBehaviour
         Vector2 moveDir;
         if (currentState == State.Chase)
         {
-            moveDir = ((Vector2)_player.position - (Vector2)transform.position).normalized;
+            float dirX = Mathf.Sign(_player.position.x - transform.position.x);
+            moveDir = new Vector2(dirX, 0f);
             _rb.velocity = moveDir * chaseSpeed;
         }
         else
@@ -73,23 +95,13 @@ public class Enemy_Patrol : MonoBehaviour
             _sprite.flipX = _rb.velocity.x < 0;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        TryDamage(collision.collider);
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        TryDamage(collision.collider);
-    }
-
-    private void TryDamage(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
         if (Time.time < _damageTimer) return;
 
         var health = other.GetComponent<PlayerHealth>();
-        if (health)
+        if (health != null)
         {
             health.TakeDamage(damageAmount, PlayerHealth.DamageType.TTLDamage);
             _damageTimer = Time.time + damageCooldown;
@@ -103,6 +115,10 @@ public class Enemy_Patrol : MonoBehaviour
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, damageTriggerRadius);
+
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireCube(_startPos + pointA, Vector3.one * 0.4f);
         Gizmos.DrawWireCube(_startPos + pointB, Vector3.one * 0.4f);

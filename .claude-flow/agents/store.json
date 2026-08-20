@@ -1,0 +1,18 @@
+{
+  "agents": {
+    "implementer-1": {
+      "agentId": "implementer-1",
+      "agentType": "implementer",
+      "status": "idle",
+      "health": 1,
+      "taskCount": 0,
+      "config": {
+        "model": "haiku"
+      },
+      "createdAt": "2026-08-11T07:32:09.026Z",
+      "model": "haiku",
+      "modelRoutedBy": "explicit"
+    }
+  },
+  "version": "3.0.0"
+}

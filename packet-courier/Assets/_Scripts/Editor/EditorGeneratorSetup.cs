@@ -125,6 +125,29 @@ public static partial class EditorGenerator
         SavePrefab(go, path);
     }
 
+    private static void CreateFanVortexPrefab()
+    {
+        string path = PrefabRoot + "/Fan_Vortex.prefab";
+        GameObject go = new GameObject("Fan_Vortex");
+        go.layer = 0;
+
+        var col = go.AddComponent<BoxCollider2D>();
+        col.size = new Vector2(4f, 4f);
+        col.isTrigger = true;
+        col.usedByEffector = false;
+
+        var fan = go.AddComponent<Fan_Vortex>();
+        fan.pushDirection = Vector2.up;
+        fan.pushForce = 25f;
+        fan.damageAmount = 5f;
+
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = LoadOrCreateSprite("fan_vortex", 16, 16, new Color(0.3f, 0.7f, 1f), 32f);
+        sr.sortingOrder = 3;
+
+        SavePrefab(go, path);
+    }
+
     [MenuItem("Tools/Packet Courier/Setup Scene")]
     public static void SetupScene()
     {
@@ -162,6 +185,7 @@ public static partial class EditorGenerator
 
         cam.orthographic = true;
         cam.orthographicSize = 6f;
+        cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = new Color(0.05f, 0.05f, 0.15f);
         cam.transform.position = new Vector3(0, 0, -10);
 

@@ -24,6 +24,7 @@ public static partial class EditorGenerator
         { 'B', PrefabRoot + "/DataBit.prefab" },
         { 'N', PrefabRoot + "/Snippet.prefab" },
         { 'C', PrefabRoot + "/Checkpoint_TCP.prefab" },
+        { 'V', PrefabRoot + "/Fan_Vortex.prefab" },
     };
 
     [MenuItem("Tools/Packet Courier/Generate Level Scenes")]
