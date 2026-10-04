@@ -1,0 +1,45 @@
+# Taruh file ini di .github/workflows/agent.yml di SETIAP repo yang mau
+# dikerjakan agent. Isinya sama persis untuk semua repo â€” cukup copy-paste.
+#
+# Repo tujuan TIDAK perlu install GitHub App opencode, dan TIDAK perlu
+# API key. Mode ini pakai GITHUB_TOKEN bawaan GitHub.
+name: agent
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+# Cancel jalan lama kalau ada trigger baru untuk hal yang sama â€” biar tidak
+# rebut-branch kalau beberapa komentar datang berdekatan.
+concurrency:
+  group: agent-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  agent:
+    if: >-
+      contains(github.event.comment.body, '/oc') ||
+      contains(github.event.comment.body, '/opencode')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Jalankan agent
+        uses: anomalyco/opencode/github@latest
+        with:
+          model: opencode/big-pickle
+          mentions: /opencode,/oc
+          use_github_token: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENCODE_DISABLE_LSP_DOWNLOAD: "1"
