@@ -23,8 +23,8 @@ public class HUD_Cooldown : MonoBehaviour
 
     private void Start()
     {
-        _player = FindObjectOfType<PlayerController>();
-        _mode = FindObjectOfType<PlayerMode>();
+        _player = FindAnyObjectByType<PlayerController>();
+        _mode = FindAnyObjectByType<PlayerMode>();
 
         if (barContainer && cooldownFillBar)
             barContainer.sizeDelta = new Vector2(barWidth, barHeight);

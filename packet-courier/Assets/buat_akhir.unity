@@ -149,9 +149,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 207171255}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c737308ffc994d348ac5291c0c239854, type: 3}
+  m_Script: {fileID: 11500000, guid: 44c964a1ff9ffee45b6d431ed2e1fbea, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelManager
   spawnPlayerAtStart: 1
   playerSpawnPos: {x: -5, y: 2}
 --- !u!4 &207171257

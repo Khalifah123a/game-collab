@@ -25,7 +25,7 @@ public class HUD_Mode : MonoBehaviour
 
     private void Start()
     {
-        _mode = FindObjectOfType<PlayerMode>();
+        _mode = FindAnyObjectByType<PlayerMode>();
         if (_mode == null)
             enabled = false;
     }

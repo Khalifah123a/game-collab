@@ -44,9 +44,9 @@ public class Laser_Beam : MonoBehaviour
     {
         IsOn = on;
         if (_collider != null)
-            _collider.enabled = on;
+            _collider.enabled = true;
         if (beamSprite != null)
-            beamSprite.enabled = on;
+            beamSprite.color = new Color(1f, on ? 0.2f : 0.75f, 0.2f, on ? 1f : 0.2f);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -64,9 +64,10 @@ public class Laser_Beam : MonoBehaviour
     private void FixedUpdate()
     {
         if (!IsOn || !_playerInside) return;
+        if (SafeZone.IsPlayerSafe) return;
         if (Time.time < _damageTimer) return;
 
-        var player = FindObjectOfType<PlayerController>();
+        var player = FindAnyObjectByType<PlayerController>();
         if (player == null) return;
 
         var health = player.GetComponent<PlayerHealth>();

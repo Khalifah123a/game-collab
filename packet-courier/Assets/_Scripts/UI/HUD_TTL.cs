@@ -18,9 +18,14 @@ public class HUD_TTL : MonoBehaviour
 
     private void Start()
     {
-        _health = FindObjectOfType<PlayerHealth>();
+        _health = FindAnyObjectByType<PlayerHealth>();
         if (_health == null)
             enabled = false;
+        if (ttlFillBar != null && ttlFillBar.sprite == null)
+        {
+            var s = Resources.Load<Sprite>("GeneratedArt/hud_bar_fill");
+            if (s != null) ttlFillBar.sprite = s;
+        }
     }
 
     private void Update()

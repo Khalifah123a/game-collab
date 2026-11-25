@@ -15,11 +15,19 @@ public class Collectible_Snippet : MonoBehaviour
     private Collider2D _collider;
     private SpriteRenderer _sprite;
     private Vector3 _baseScale;
+    private string Id => "snippet:" + gameObject.name + ":" + transform.position.ToString("F3");
+    private bool _collected;
+    private void Start() { if (GameManager.Ensure().ledger.IsCollected(Id)) gameObject.SetActive(false); }
 
     private void Awake()
     {
         _collider = GetComponent<Collider2D>();
         _sprite = GetComponent<SpriteRenderer>();
+        if (_sprite != null)
+        {
+            var s = Resources.Load<Sprite>("GeneratedArt/snippet");
+            if (s != null) { _sprite.sprite = s; _sprite.color = Color.white; }
+        }
         _baseScale = transform.localScale;
     }
 
@@ -32,12 +40,16 @@ public class Collectible_Snippet : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
+        if (_collected) return;
+        _collected = true;
+        GameManager.Ensure().ledger.Collect(Id, 0);
 
         _collider.enabled = false;
         if (_sprite) _sprite.enabled = false;
 
-        var health = FindObjectOfType<PlayerHealth>();
-        if (health) health.AddPacketSnippet();
+        var health = FindAnyObjectByType<PlayerHealth>();
+        if (health) health.Heal(ttlBonus);
+        AudioManager.PlayCollect();
 
         if (pickupEffect)
             Instantiate(pickupEffect, transform.position, Quaternion.identity);

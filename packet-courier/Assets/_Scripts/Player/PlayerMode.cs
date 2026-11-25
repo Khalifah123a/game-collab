@@ -56,6 +56,8 @@ public class PlayerMode : MonoBehaviour
             if (_input == null) return;
         }
 
+        if (Time.timeScale == 0 || (GameManager.Instance != null && GameManager.Instance.currentWorldIndex == 0)) return;
+
         if (_input.modeTogglePressed &&
             Time.time - lastSwitchTime >= switchCooldown)
         {
@@ -68,11 +70,18 @@ public class PlayerMode : MonoBehaviour
             CyclePort(1);
             _input.ConsumePortForward();
         }
-        if (_input.portBackPressed)
+                if (_input.portBackPressed)
         {
             CyclePort(-1);
             _input.ConsumePortBack();
         }
+
+        // Direct number key shortcuts for ports
+        if (Input.GetKeyDown(KeyCode.Alpha1)) SetPort(80);
+        else if (Input.GetKeyDown(KeyCode.Alpha2)) SetPort(443);
+        else if (Input.GetKeyDown(KeyCode.Alpha3)) SetPort(22);
+        else if (Input.GetKeyDown(KeyCode.Alpha4)) SetPort(21);
+        else if (Input.GetKeyDown(KeyCode.Alpha5)) SetPort(8080);
     }
 
     public void ToggleMode()
@@ -82,6 +91,7 @@ public class PlayerMode : MonoBehaviour
 
     public void SetMode(bool encrypted)
     {
+        bool changed = isEncrypted != encrypted;
         isEncrypted = encrypted;
         lastSwitchTime = Time.time;
 
@@ -91,6 +101,12 @@ public class PlayerMode : MonoBehaviour
             _collider.size = size;
         }
 
+        if (changed)
+        {
+            AudioManager.PlayInteract();
+            JuiceManager.SpawnImpactSparks(transform.position, isEncrypted ? new Color(0.1f, 1f, 0.85f) : new Color(0.2f, 0.7f, 1f));
+        }
+
         OnModeChanged?.Invoke(isEncrypted);
     }
 
@@ -98,24 +114,34 @@ public class PlayerMode : MonoBehaviour
     {
         int idx = System.Array.IndexOf(availablePorts, currentPort);
         idx = (idx + direction + availablePorts.Length) % availablePorts.Length;
-        currentPort = availablePorts[idx];
-        OnPortChanged?.Invoke(currentPort);
+        SetPort(availablePorts[idx]);
     }
 
     public void SetPort(int port)
     {
+        bool changed = currentPort != port;
         currentPort = port;
+        if (changed)
+        {
+            AudioManager.PlayInteract();
+            JuiceManager.SpawnImpactSparks(transform.position, new Color(0.2f, 0.9f, 1f));
+        }
         OnPortChanged?.Invoke(currentPort);
     }
 
+    
+
     public float GetSpeed()
     {
-        return isEncrypted ? encryptedSpeed : plaintextSpeed;
+        float shopBonus = 0f;
+        var gm = GameManager.Instance;
+        if (gm != null && gm.shopLevels != null && gm.shopLevels.Length > 5) shopBonus = 0.25f * gm.shopLevels[5];
+        return (isEncrypted ? encryptedSpeed : plaintextSpeed) + shopBonus + GetUpgradeBonus(GameManager.UpgradeType.BaseSpeed) * 0.5f;
     }
 
     public float GetDashDistance()
     {
-        return isEncrypted ? encryptedDashDist : plaintextDashDist;
+        return (isEncrypted ? encryptedDashDist : plaintextDashDist) + GetUpgradeBonus(GameManager.UpgradeType.DashDistance);
     }
 
     public float GetDashCooldown()

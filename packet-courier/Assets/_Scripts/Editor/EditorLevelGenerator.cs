@@ -51,10 +51,13 @@ public static partial class EditorGenerator
 
     private static void BuildLevelScenes()
     {
-        foreach (string file in Directory.GetFiles(LevelsRoot, "World1_Segment*.txt"))
+        EnsureLevelSpriteMeshes();
+        EnsureFlyingEnemyPrefab();
+        foreach (string file in Directory.GetFiles(LevelsRoot, "World*_Segment*.txt"))
         {
             string sceneName = Path.GetFileNameWithoutExtension(file);
             int segmentIndex = ParseSegmentIndex(sceneName);
+            int worldIndex = int.Parse(sceneName.Substring(5, sceneName.IndexOf('_') - 5)) - 1;
             string scenePath = $"{ScenesRoot}/{sceneName}.unity";
 
             Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -62,19 +65,66 @@ public static partial class EditorGenerator
             EnsureCamera();
             EnsureLevelManager();
             EnsureHUD();
+            EnsureEventSystem();
 
             var contentRoot = new GameObject("LevelContent");
-            var lm = Object.FindObjectOfType<LevelManager>();
-            lm.worldIndex = 0;
+            var lm = Object.FindAnyObjectByType<LevelManager>();
+            lm.worldIndex = worldIndex;
             lm.segmentIndex = segmentIndex;
 
             BuildLevelFromFile(file, contentRoot.transform);
+            InstallFlyingEncounters(worldIndex, segmentIndex);
+            if (worldIndex == 3) Object.FindAnyObjectByType<PlayerController>().gravity = 42;
+            Camera.main.backgroundColor = new Color[] { new Color(0.035f,0.06f,0.07f), new Color(0.09f,0.045f,0.055f), new Color(0.025f,0.08f,0.1f), new Color(0.11f,0.12f,0.16f), new Color(0.12f,0.02f,0.04f) }[Mathf.Clamp(worldIndex, 0, 4)];
 
             lm.playerSpawn = FindChildByName(contentRoot.transform, "Player");
             lm.serverBPoint = FindChildByName(contentRoot.transform, "ServerB_Goal");
 
+            if (worldIndex == 1 && segmentIndex == 3) // World 2 Segment 4: Mini-Boss The Censor
+            {
+                var bossGo = new GameObject("Boss_TheCensor");
+                bossGo.transform.SetParent(contentRoot.transform);
+                bossGo.AddComponent<Boss_TheCensor>();
+                bossGo.transform.position = new Vector3(lm.serverBPoint != null ? lm.serverBPoint.position.x - 16f : 330f, -8f, 0f);
+            }
+            else if (worldIndex == 3 && segmentIndex == 4) // World 4 Segment 5: Mini-Boss Solaris
+            {
+                var bossGo = new GameObject("Boss_Solaris");
+                bossGo.transform.SetParent(contentRoot.transform);
+                bossGo.AddComponent<Boss_Solaris>();
+                bossGo.transform.position = new Vector3(lm.serverBPoint != null ? lm.serverBPoint.position.x - 18f : 255f, -8f, 0f);
+            }
+            else if (worldIndex == 4) // World 5: Final Boss (Boss Akhir)
+            {
+                var bossGo = new GameObject("Boss_Final");
+                bossGo.transform.SetParent(contentRoot.transform);
+                bossGo.AddComponent<Boss_Final>();
+                bossGo.transform.position = new Vector3(lm.serverBPoint != null ? lm.serverBPoint.position.x - 18f : 430f, -8f, 0f);
+            }
+
             if (!EditorSceneManager.SaveScene(scene, scenePath))
                 Debug.LogError($"[EditorLevelGenerator] Gagal menyimpan scene: {scenePath}");
+        }
+    }
+
+    public static void EnsureLevelSpriteMeshes()
+    {
+        foreach (char tile in new[] { '#', '-', '=' })
+        {
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(TileToPrefab[tile]);
+            var renderer = prefab != null ? prefab.GetComponent<SpriteRenderer>() : null;
+            if (renderer == null || renderer.sprite == null) continue;
+
+            string path = AssetDatabase.GetAssetPath(renderer.sprite);
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null) continue;
+
+            var settings = new TextureImporterSettings();
+            importer.ReadTextureSettings(settings);
+            if (settings.spriteMeshType == SpriteMeshType.FullRect) continue;
+            settings.spriteMeshType = SpriteMeshType.FullRect;
+            importer.SetTextureSettings(settings);
+            importer.SaveAndReimport();
         }
     }
 
@@ -103,6 +153,25 @@ public static partial class EditorGenerator
                 {
                     col++; i++;
                     continue;
+                }
+
+                if (c == '#' || c == '-')
+                {
+                    int length = 1;
+                    while (i + length < line.Length && line[i + length] == c) length++;
+                    var ground = PlacePrefab(TileToPrefab[c], col, row, parent);
+                    ground.transform.position += Vector3.right * (length - 1) * 0.5f;
+                    float thickness = c == '-' ? 0.5f : 1;
+                    var collider = ground.GetComponent<BoxCollider2D>();
+                    collider.autoTiling = false;
+                    collider.size = new Vector2(length, thickness);
+                    var render = ground.GetComponent<SpriteRenderer>(); render.drawMode = SpriteDrawMode.Tiled; render.tileMode = SpriteTileMode.Continuous; render.size = collider.size;
+                    i += length; col += length; continue;
+                }
+                if ("abcHRTZD".IndexOf(c) >= 0)
+                {
+                    PlaceSpecial(c, col, row, parent);
+                    col++; i++; continue;
                 }
 
                 if (c == 'F')
@@ -142,15 +211,18 @@ public static partial class EditorGenerator
         }
 
         GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent);
-        instance.name = prefab.name;
+        instance.name = prefab.name + "_" + col + "_" + row;
         instance.transform.position = new Vector3(col, -row, 0);
+        if (instance.TryGetComponent<Enemy_Patrol>(out var enemy)) { enemy.damageAmount = 15; enemy.damageCooldown = 0.8f; instance.transform.position += Vector3.up * 0.1f; }
+        if (instance.TryGetComponent<Hazard_Spike>(out var spike)) { spike.damageType = PlayerHealth.DamageType.TTLDamage; spike.ttlDamage = 15; }
+        if (instance.TryGetComponent<Laser_Beam>(out var beam)) { beam.damageAmount = 15; beam.damageCooldown = 0.8f; }
         return instance;
     }
 
     private static Transform FindChildByName(Transform parent, string name)
     {
         for (int i = 0; i < parent.childCount; i++)
-            if (parent.GetChild(i).name == name)
+            if (parent.GetChild(i).name.StartsWith(name + "_"))
                 return parent.GetChild(i);
         return null;
     }
@@ -158,10 +230,10 @@ public static partial class EditorGenerator
     private static void RegisterBuildSettings()
     {
         var scenes = new List<EditorBuildSettingsScene>();
-        string[] order = {
-            "Menu", "World1_Segment1", "World1_Segment2",
-            "World1_Segment3", "Hub", "GameOver"
-        };
+        var order = new List<string> { "Menu" };
+        for (int world = 0; world < WorldRules.Count; world++)
+            for (int segment = 1; segment <= WorldRules.Segments(world); segment++) order.Add($"World{world + 1}_Segment{segment}");
+        order.Add("Hub"); order.Add("GameOver");
         foreach (string name in order)
         {
             string path = $"{ScenesRoot}/{name}.unity";
@@ -183,6 +255,7 @@ public static partial class EditorGenerator
         string scenePath = $"{ScenesRoot}/{sceneName}.unity";
 
         Scene scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        EnsureMetaCamera();
         EnsureEventSystem();
         var go = new GameObject(sceneName);
         go.AddComponent(uiComponent);
@@ -191,9 +264,31 @@ public static partial class EditorGenerator
             Debug.LogError($"[EditorLevelGenerator] Gagal menyimpan scene: {scenePath}");
     }
 
+    [MenuItem("Tools/Packet Courier/Refresh Menu Scenes")]
+    public static void RefreshMetaScenes()
+    {
+        if (EditorApplication.isPlaying) return;
+        BuildMetaScenes();
+        RegisterBuildSettings();
+        AssetDatabase.SaveAssets();
+    }
+
+    private static void EnsureMetaCamera()
+    {
+        if (Camera.main != null) return;
+        var cameraObject = new GameObject("Main Camera");
+        cameraObject.tag = "MainCamera";
+        var camera = cameraObject.AddComponent<Camera>();
+        camera.orthographic = true;
+        camera.orthographicSize = 5f;
+        camera.clearFlags = CameraClearFlags.SolidColor;
+        camera.backgroundColor = new Color(0.025f, 0.04f, 0.08f);
+        camera.transform.position = new Vector3(0, 0, -10);
+    }
+
     private static void EnsureEventSystem()
     {
-        if (Object.FindObjectOfType<UnityEngine.EventSystems.EventSystem>() != null) return;
+        if (Object.FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>() != null) return;
         var go = new GameObject("EventSystem");
         go.AddComponent<UnityEngine.EventSystems.EventSystem>();
         go.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();

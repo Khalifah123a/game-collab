@@ -23,6 +23,7 @@ public static partial class EditorGenerator
         CreatePlatformOneWayPrefab();
         CreateSpikePrefab();
         CreateEnemyPrefab();
+        CreateFlyingEnemyPrefab();
         CreateLaserPrefab();
         CreateMovingPlatformPrefab();
         CreateFirewallGatePrefab();
@@ -31,6 +32,7 @@ public static partial class EditorGenerator
         CreateSnippetPrefab();
         CreateServerBGoalPrefab();
         CreateFanVortexPrefab();
+        UpgradePlayerPrefab();
 
         AssetDatabase.Refresh();
         EditorUtility.DisplayDialog(
@@ -134,7 +136,7 @@ public static partial class EditorGenerator
         importer.SaveAndReimport();
     }
 
-    private static void CreatePlayerAnimatorController()
+    private static void CreateLegacyPlayerAnimatorController()
     {
         string path = PrefabRoot + "/PlayerAnimator.controller";
         var controller = AssetDatabase.LoadAssetAtPath<UnityEditor.Animations.AnimatorController>(path);
@@ -340,6 +342,7 @@ public static partial class EditorGenerator
 
         var rb = go.AddComponent<Rigidbody2D>();
         rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.gravityScale = 0f;
         rb.freezeRotation = true;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
@@ -352,6 +355,30 @@ public static partial class EditorGenerator
         var sr = go.AddComponent<SpriteRenderer>();
         sr.sprite = LoadOrCreateSprite("enemy", 8, 8, Color.red, 32f);
         sr.sortingOrder = 6;
+
+        SavePrefab(go, path);
+    }
+
+    private static void CreateFlyingEnemyPrefab()
+    {
+        string path = PrefabRoot + "/Enemy_Flying.prefab";
+        GameObject go = new GameObject("Enemy_Flying");
+        go.layer = 0;
+
+        var rb = go.AddComponent<Rigidbody2D>();
+        rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.freezeRotation = true;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        var col = go.AddComponent<CircleCollider2D>();
+        col.isTrigger = true;
+        col.radius = 0.38f;
+
+        go.AddComponent<Enemy_Flying>();
+
+        var sr = go.AddComponent<SpriteRenderer>();
+        sr.sprite = LoadOrCreateSprite("enemy_flying", 10, 6, new Color(0.35f, 0.95f, 0.9f), 32f);
+        sr.sortingOrder = 7;
 
         SavePrefab(go, path);
     }

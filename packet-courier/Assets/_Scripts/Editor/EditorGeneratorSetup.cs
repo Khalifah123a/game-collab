@@ -167,7 +167,7 @@ public static partial class EditorGenerator
 
     private static void EnsureInputManager()
     {
-        if (Object.FindObjectOfType<InputManager>() != null) return;
+        if (Object.FindAnyObjectByType<InputManager>() != null) return;
 
         var go = new GameObject("InputManager");
         go.AddComponent<InputManager>();
@@ -184,7 +184,7 @@ public static partial class EditorGenerator
         }
 
         cam.orthographic = true;
-        cam.orthographicSize = 6f;
+        cam.orthographicSize = 4.5f;
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = new Color(0.05f, 0.05f, 0.15f);
         cam.transform.position = new Vector3(0, 0, -10);
@@ -195,7 +195,7 @@ public static partial class EditorGenerator
 
     private static void EnsureLevelManager()
     {
-        if (Object.FindObjectOfType<LevelManager>() != null) return;
+        if (Object.FindAnyObjectByType<LevelManager>() != null) return;
 
         var go = new GameObject("LevelManager");
         var lm = go.AddComponent<LevelManager>();
@@ -206,7 +206,7 @@ public static partial class EditorGenerator
 
     private static void EnsureGameManager()
     {
-        if (Object.FindObjectOfType<GameManager>() != null) return;
+        if (Object.FindAnyObjectByType<GameManager>() != null) return;
 
         var go = new GameObject("GameManager");
         go.AddComponent<GameManager>();
@@ -214,7 +214,12 @@ public static partial class EditorGenerator
 
     private static void EnsureHUD()
     {
-        if (Object.FindObjectOfType<HUD_TTL>() != null) return;
+        if (Object.FindAnyObjectByType<GameplayHUD>() == null) new GameObject("GameplayHUD", typeof(RectTransform), typeof(GameplayHUD));
+    }
+
+    private static void EnsureLegacyHUD()
+    {
+        if (Object.FindAnyObjectByType<HUD_TTL>() != null) return;
 
         var canvasObj = new GameObject("HUD_Canvas");
         var canvas = canvasObj.AddComponent<Canvas>();
