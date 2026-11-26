@@ -229,17 +229,17 @@ public class OverclockUI : MonoBehaviour
             {
                 if (maxed)
                 {
-                    _levelTexts[i].text = $"LV {level}/{max}  [MAX INSTALLED]";
+                    _levelTexts[i].text = $"LV {level}/{max} • MAKS";
                     _levelTexts[i].color = PixelUIKit.Cyan;
                 }
                 else if (afford)
                 {
-                    _levelTexts[i].text = level > 0 ? $"LV {level}/{max}  — UPGRADE READY" : $"LV {level}/{max}  — NOT INSTALLED";
+                    _levelTexts[i].text = level > 0 ? $"LV {level}/{max} • SIAP UPGRADE" : $"LV {level}/{max} • BELUM PASANG";
                     _levelTexts[i].color = level > 0 ? PixelUIKit.Mint : PixelUIKit.TextMuted;
                 }
                 else
                 {
-                    _levelTexts[i].text = $"LV {level}/{max}  — LOCKED (NEED {cost} DB)";
+                    _levelTexts[i].text = $"LV {level}/{max} • BUTUH {cost} DB";
                     _levelTexts[i].color = PixelUIKit.Crimson;
                 }
             }
@@ -252,7 +252,7 @@ public class OverclockUI : MonoBehaviour
 
             if (i < _descTexts.Count && _descTexts[i] != null)
             {
-                _descTexts[i].text = $"{entry.Effect} // {entry.ControlsHint}";
+                _descTexts[i].text = $"{entry.Effect} • {entry.ControlsHint}";
             }
 
             if (i < _priceTexts.Count && _priceTexts[i] != null)
@@ -411,7 +411,7 @@ public class OverclockUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             sideGo.transform,
             "SideTitle",
-            "OVERCLOCK",
+            "CHIP SKILL",
             new Vector2(0.08f, 0.92f),
             new Vector2(0.92f, 0.97f),
             16,
@@ -423,7 +423,7 @@ public class OverclockUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             sideGo.transform,
             "SideSub",
-            "TERMINAL // v2.4",
+            "Skill Permanen",
             new Vector2(0.08f, 0.88f),
             new Vector2(0.92f, 0.92f),
             10,
@@ -436,7 +436,7 @@ public class OverclockUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             sideGo.transform,
             "CategoryHeader",
-            "CATEGORY ARCHITECTURE",
+            "KATEGORI",
             new Vector2(0.08f, 0.78f),
             new Vector2(0.92f, 0.82f),
             9,
@@ -446,11 +446,11 @@ public class OverclockUI : MonoBehaviour
             FontStyle.Normal);
 
         // Tab: Mobility
-        BuildSidebarTab(sideGo.transform, "MOBILITY", "CHIPS [1, 5]", 0.70f, PixelUIKit.Cyan, true);
+        BuildSidebarTab(sideGo.transform, "GERAK", "Chip 1, 5", 0.70f, PixelUIKit.Cyan, true);
         // Tab: Combat
-        BuildSidebarTab(sideGo.transform, "COMBAT", "CHIPS [2, 3, 4]", 0.58f, PixelUIKit.OrangeLight, false);
+        BuildSidebarTab(sideGo.transform, "SERANG", "Chip 2, 3, 4", 0.58f, PixelUIKit.OrangeLight, false);
         // Tab: Utility
-        BuildSidebarTab(sideGo.transform, "UTILITY", "CHIPS [6, 7, 8]", 0.46f, PixelUIKit.Mint, false);
+        BuildSidebarTab(sideGo.transform, "BANTUAN", "Chip 6, 7, 8", 0.46f, PixelUIKit.Mint, false);
 
         // Live Balance Card at Sidebar Bottom
         var balCard = new GameObject("SideBalanceCard", typeof(RectTransform), typeof(Image));
@@ -466,7 +466,7 @@ public class OverclockUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             balCard.transform,
             "BalLabel",
-            "DATA BITS AVAILABLE",
+            "SALDO DATA BITS",
             new Vector2(0.08f, 0.55f),
             new Vector2(0.92f, 0.90f),
             9,
@@ -549,9 +549,9 @@ public class OverclockUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             mainGo.transform,
             "ContentHeader",
-            "OVERCLOCK TERMINAL",
+            "CHIP SKILL",
             new Vector2(0.03f, 0.915f),
-            new Vector2(0.55f, 0.972f),
+            new Vector2(0.54f, 0.972f),
             18,
             PixelUIKit.Cyan,
             TextAnchor.MiddleLeft,
@@ -561,9 +561,9 @@ public class OverclockUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             mainGo.transform,
             "ContentSub",
-            "PASANG CHIP KEMAMPUAN PERMANEN // KLIK CHIP ATAU TEKAN [1-3]",
+            "Buka kemampuan permanen  •  Klik atau tekan [1-8]",
             new Vector2(0.03f, 0.873f),
-            new Vector2(0.55f, 0.913f),
+            new Vector2(0.54f, 0.913f),
             10,
             PixelUIKit.TextMuted,
             TextAnchor.MiddleLeft,
@@ -574,11 +574,11 @@ public class OverclockUI : MonoBehaviour
         PixelUIKit.CreateTactileButton(
             mainGo.transform,
             "shield",
-            "TECH SHOP",
+            "TOKO UPGRADE",
             "",
             "TAB",
-            new Vector2(0.57f, 0.885f),
-            new Vector2(0.825f, 0.965f),
+            new Vector2(0.555f, 0.885f),
+            new Vector2(0.80f, 0.965f),
             PixelUIKit.ButtonTheme.PrimaryCyan,
             SwitchToHardwareShop);
 
@@ -589,7 +589,7 @@ public class OverclockUI : MonoBehaviour
             "TUTUP",
             "",
             "ESC",
-            new Vector2(0.84f, 0.885f),
+            new Vector2(0.815f, 0.885f),
             new Vector2(0.97f, 0.965f),
             PixelUIKit.ButtonTheme.SecondarySlate,
             Close);
@@ -747,7 +747,7 @@ public class OverclockUI : MonoBehaviour
         var levelText = PixelUIKit.CreatePixelLabel(
             contentGo.transform,
             "LevelStatus",
-            "LV 0/1 — NOT INSTALLED",
+            "LV 0/1 • BELUM PASANG",
             new Vector2(0.16f, 0.26f),
             new Vector2(0.68f, 0.42f),
             9,
@@ -761,7 +761,7 @@ public class OverclockUI : MonoBehaviour
         var descText = PixelUIKit.CreatePixelLabel(
             contentGo.transform,
             "Desc",
-            $"{entry.Effect} // {entry.ControlsHint}",
+            $"{entry.Effect} • {entry.ControlsHint}",
             new Vector2(0.16f, 0.08f),
             new Vector2(0.68f, 0.24f),
             8,
@@ -803,7 +803,7 @@ public class OverclockUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             priceBadgeGo.transform,
             "ActionLabel",
-            "PASANG / INSTALL",
+            "PASANG",
             new Vector2(0f, 0.10f),
             new Vector2(1f, 0.35f),
             8,
@@ -845,7 +845,7 @@ public class OverclockUI : MonoBehaviour
         _footerHint = PixelUIKit.CreatePixelLabel(
             footerGo.transform,
             "FooterHint",
-            "[1-3] PASANG CHIP   |   [KLIK] AKTIFKAN MODUL   |   [TAB] HARDWARE TECH SHOP   |   [ESC / 0] TUTUP",
+            "[1-8] Pasang Chip  •  [TAB] Toko Upgrade  •  [ESC] Tutup",
             Vector2.zero,
             Vector2.one,
             10,

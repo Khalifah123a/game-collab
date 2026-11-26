@@ -130,37 +130,37 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
     {
         new PrologueSlide
         {
-            ChapterTag = "BABAK I // TAHUN 2099 — PROTOKOL RUNTUH",
-            Headline = new stringHeadline("INFILTRASI ROOTKIT PRIME", "SEKTOR GLOBAL LUMPUH // JALUR UTAMA TERPUTUS"),
-            Speaker = "ARSIP JARINGAN // LOG #2099",
-            Body = "Malware otonom bernama ROOTKIT PRIME telah membajak tulang punggung jaringan dunia. Komunikasi antar-server lumpuh total, dan jutaan paket data vital terkurung di balik firewall berbahaya.",
+            ChapterTag = "PROLOG 1 / 4",
+            Headline = new stringHeadline("JARINGAN RUNTUH", "Tahun 2099 — Rootkit Prime"),
+            Speaker = "ARSIP 2099",
+            Body = "Rootkit Prime membajak jalur utama jaringan dunia. Server antar-kota terputus, dan jutaan paket data penting terjebak di balik firewall.",
             AccentColor = new Color(1f, 0.22f, 0.38f, 1f),
             VisualType = 0
         },
         new PrologueSlide
         {
-            ChapterTag = "BABAK II // SEKTOR 01: LOCALHOST BUNKER",
-            Headline = new stringHeadline("UNIT K-01 DIAKTIFKAN", "KURIR PAKET TERAKHIR // DIVISI LOGISTIK #808"),
-            Speaker = "ARIA-7 // OPERATOR DISPATCH",
-            Body = "Sinyal darurat terhubung! Syukurlah kamu bangun, Unit K-01. Kamu adalah Packet Courier terakhir yang masih beroperasi di Sektor Localhost. Tanpamu, seluruh jaringan akan padam selamanya.",
+            ChapterTag = "PROLOG 2 / 4",
+            Headline = new stringHeadline("KURIR K-01 BANGUN", "Bunker Localhost"),
+            Speaker = "ARIA-7",
+            Body = "Syukurlah kamu aktif, K-01. Kamu kurir terakhir yang tersisa di Localhost. Tanpamu, seluruh jaringan bakal padam selamanya.",
             AccentColor = new Color(0f, 0.94f, 1f, 1f),
             VisualType = 1
         },
         new PrologueSlide
         {
-            ChapterTag = "BABAK III // HUKUM WAKTU: TIME-TO-LIVE (TTL)",
-            Headline = new stringHeadline("DETAK HIDUP KURIR DATA", "SAFE ZONE AMAN // ZONA LUAR MENGURAS ENERGI TTL"),
-            Speaker = "ARIA-7 // OPERATOR DISPATCH",
-            Body = "Ingat aturan terpenting: di dalam bunker SAFE ZONE hijau, energimu stabil. Namun begitu melangkah keluar, protokol musuh menguras TTL (Time-To-Live) milikmu setiap detik hingga 0!",
+            ChapterTag = "PROLOG 3 / 4",
+            Headline = new stringHeadline("ATURAN TTL", "Aman di Bunker, Terkuras di Luar"),
+            Speaker = "ARIA-7",
+            Body = "Di dalam Safe Zone hijau, TTL-mu aman. Begitu melangkah keluar, energi TTL terus berkurang setiap detik. Jangan sampai habis.",
             AccentColor = new Color(1f, 0.65f, 0.18f, 1f),
             VisualType = 2
         },
         new PrologueSlide
         {
-            ChapterTag = "BABAK IV // MISI PENGIRIMAN PAKET",
-            Headline = new stringHeadline("DARI SERVER A KE SERVER B", "AMBIL PAKET -> TEROBOS RINTANGAN -> PULIHKAN JARINGAN"),
-            Speaker = "ARIA-7 // OPERATOR DISPATCH",
-            Body = "Tugasmu di setiap sektor: ambil Paket Terenkripsi dari Kurir Server A di Safe Zone, lewati rintangan & penjaga, lalu serahkan ke Server B di ujung kanan. Mari kita kalibrasi sistemmu dulu!",
+            ChapterTag = "PROLOG 4 / 4",
+            Headline = new stringHeadline("ANTAR PAKETNYA", "Server A ke Server B"),
+            Speaker = "ARIA-7",
+            Body = "Ambil paket dari kurir di Safe Zone, lewati rintangan, lalu serahkan ke Server B di ujung kanan. Ayo tes gerakmu dulu sebentar!",
             AccentColor = new Color(0.21f, 0.96f, 0.61f, 1f),
             VisualType = 3
         }
@@ -170,43 +170,43 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
     {
         new TutorialStepDef
         {
-            StepTag = "LATIHAN 1 / 5 // MOTORIK & LOMPATAN",
+            StepTag = "LATIHAN 1 / 5",
             Title = "GERAK & DOUBLE JUMP",
-            Dialogue = "ARIA-7: \"Coba gerakkan kakimu ke kiri/kanan dengan [A]/[D], lalu tekan [SPACE] dua kali di udara untuk menguji pendorong Double Jump.\"",
-            KeyHint = "[A / D] GERAK   +   [SPACE 2x] DOUBLE JUMP",
-            ObjectiveHint = "Bergerak & lakukan lompatan di dalam ruangan"
+            Dialogue = "ARIA-7: \"Jalan pakai [A]/[D], lalu tekan [SPACE] 2x di udara untuk Double Jump.\"",
+            KeyHint = "[A / D] Gerak  •  [SPACE 2x] Double Jump",
+            ObjectiveHint = "Bergerak & lompat"
         },
         new TutorialStepDef
         {
-            StepTag = "LATIHAN 2 / 5 // AKSELERASI FASE",
-            Title = "PHASE DASH (KEBAL SESAAT)",
-            Dialogue = "ARIA-7: \"Bagus! Sekarang tekan [LEFT SHIFT] untuk melakukan Phase Dash. Selama melesat, tubuhmu kebal sesaat (i-frame) terhadap serangan & jebakan.\"",
-            KeyHint = "[LEFT SHIFT] PHASE DASH",
-            ObjectiveHint = "Tekan [LEFT SHIFT] 1x untuk Phase Dash"
+            StepTag = "LATIHAN 2 / 5",
+            Title = "DASH (KEBAL SESAAT)",
+            Dialogue = "ARIA-7: \"Bagus! Tekan [LEFT SHIFT] untuk Dash. Saat melesat, kamu kebal sesaat dari serangan.\"",
+            KeyHint = "[LEFT SHIFT] Dash",
+            ObjectiveHint = "Tekan [LEFT SHIFT] 1x"
         },
         new TutorialStepDef
         {
-            StepTag = "LATIHAN 3 / 5 // SISTEM PERTAHANAN",
-            Title = "TEBASAN PEDANG & NANO PARRY",
-            Dialogue = "ARIA-7: \"Musuh sering mengadang jalur kabel. Tekan [KLIK KIRI / J] untuk menebas dengan Cyber Blade, atau [Q] untuk perisai Nano Parry yang memantulkan serangan.\"",
-            KeyHint = "[KLIK KIRI / J] SERANG   |   [Q] NANO PARRY",
-            ObjectiveHint = "Uji serangan [KLIK KIRI / J] atau perisai [Q]"
+            StepTag = "LATIHAN 3 / 5",
+            Title = "SERANG & PARRY",
+            Dialogue = "ARIA-7: \"Tebas musuh dengan [KLIK KIRI / J], atau tangkis serangan dengan [Q].\"",
+            KeyHint = "[KLIK KIRI / J] Tebas  •  [Q] Parry",
+            ObjectiveHint = "Coba tebas atau parry"
         },
         new TutorialStepDef
         {
-            StepTag = "LATIHAN 4 / 5 // PROTOKOL KURIR",
-            Title = "AMBIL PAKET DATA DI SAFE ZONE",
-            Dialogue = "ARIA-7: \"Perhatikan bar TTL di kiri atas tetap utuh selama di Safe Zone! Sekarang dekati NPC Pengirim Paket (tanda ▼ di kiri) dan tekan [E] untuk mengambil paket.\"",
-            KeyHint = "[E] INTERAKSI DENGAN NPC KURIR (SERVER A)",
-            ObjectiveHint = "Dekati NPC di Safe Zone & tekan [E] untuk ambil paket"
+            StepTag = "LATIHAN 4 / 5",
+            Title = "AMBIL PAKET",
+            Dialogue = "ARIA-7: \"Dekati NPC Kurir di Safe Zone dan tekan [E] untuk mengambil paket.\"",
+            KeyHint = "[E] Ambil Paket",
+            ObjectiveHint = "Tekan [E] di NPC Kurir"
         },
         new TutorialStepDef
         {
-            StepTag = "LATIHAN 5 / 5 // EKSPEDISI DIMULAI",
-            Title = "KELUAR SAFE ZONE MENUJU SERVER B",
-            Dialogue = "ARIA-7: \"Paket sudah di punggungmu! Sekarang melangkahlah keluar melewati Pintu Hijau di kanan. Begitu keluar, jaga TTL-mu dan antar paket sampai ke Server B!\"",
-            KeyHint = "JALAN KE KANAN MELEWATI PINTU HIJAU -> SERVER B",
-            ObjectiveHint = "Lewati pintu hijau Safe Zone untuk memulai ekspedisi"
+            StepTag = "LATIHAN 5 / 5",
+            Title = "KELUAR SAFE ZONE",
+            Dialogue = "ARIA-7: \"Paket sudah siap! Jalan ke kanan melewati Pintu Hijau menuju Server B.\"",
+            KeyHint = "Jalan ke kanan -> Pintu Hijau",
+            ObjectiveHint = "Lewati Pintu Hijau"
         }
     };
 
@@ -305,7 +305,7 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
             _slideSecondaryIcon.sprite = PixelUIKit.GetIcon("skull");
             _slideSecondaryIcon.color = slide.AccentColor;
             if (_prologueStageCaptionText != null)
-                _prologueStageCaptionText.text = "LIVE STAGE // SAFE ZONE BUNKER: SISTEM DARURAT AKTIF";
+                _prologueStageCaptionText.text = "Prolog 1/4  •  Bunker Safe Zone";
         }
         else if (slide.VisualType == 1)
         {
@@ -315,7 +315,7 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
             _slideSecondaryIcon.sprite = PixelUIKit.GetIcon("bolt");
             _slideSecondaryIcon.color = slide.AccentColor;
             if (_prologueStageCaptionText != null)
-                _prologueStageCaptionText.text = "LIVE DEMO // UNIT K-01: KALIBRASI MOTORIK & PATROLI";
+                _prologueStageCaptionText.text = "Prolog 2/4  •  Tes Jalan Kurir K-01";
         }
         else if (slide.VisualType == 2)
         {
@@ -324,7 +324,7 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
             _slideSecondaryIcon.sprite = PixelUIKit.GetIcon("shield");
             _slideSecondaryIcon.color = slide.AccentColor;
             if (_prologueStageCaptionText != null)
-                _prologueStageCaptionText.text = "LIVE DEMO // UNIT K-01: SIMULASI PHASE DASH & JUMP";
+                _prologueStageCaptionText.text = "Prolog 3/4  •  Tes Dash & Lompat";
         }
         else
         {
@@ -333,7 +333,7 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
             _slideSecondaryIcon.sprite = PixelUIKit.GetIcon("route");
             _slideSecondaryIcon.color = slide.AccentColor;
             if (_prologueStageCaptionText != null)
-                _prologueStageCaptionText.text = "LIVE DEMO // UNIT K-01: UJI TEBASAN CYBER BLADE 4-FRAME";
+                _prologueStageCaptionText.text = "Prolog 4/4  •  Tes Tebasan Pedang";
         }
 
         for (int i = 0; i < _prologuePips.Length; i++)
@@ -714,16 +714,16 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
         _tutorialRoot.SetActive(true);
 
         _tutStepTagText.text = TutorialWorldBuilder.IsTutorialWorldActive
-            ? "WORLD 00 // ARENA SIMULASI SIAP — 4 ZONA LATIHAN"
-            : "KALIBRASI SELESAI // SISTEM KURIR SIAP 100%";
+            ? "WORLD 00 — ARENA LATIHAN"
+            : "TUTORIAL SELESAI";
         _tutStepTagText.color = PixelUIKit.Mint;
-        _tutTitleText.text = awardBonus ? "KALIBRASI SELESAI (+50 DATABITS!)" : "KALIBRASI SELESAI — SELAMAT BERJUANG!";
+        _tutTitleText.text = awardBonus ? "SIAP BERANGKAT! (+50 DB)" : "SIAP BERANGKAT!";
         _tutDialogueText.text = TutorialWorldBuilder.IsTutorialWorldActive
-            ? "ARIA-7: \"Lewati 4 Zona Latihan (Double Jump, Platform Bergerak, Dash & Dummy), serahkan paket ke NPC Penerima, lalu masuk Portal menuju World 1!\""
-            : "ARIA-7: \"Seluruh sistem motorik, Phase Dash, dan protokol pengiriman sudah aktif. Antar paket ke Server B sebelum TTL habis!\"";
+            ? "ARIA-7: \"Lewati 4 zona latihan, serahkan paket ke NPC Penerima, lalu masuk Portal menuju World 1!\""
+            : "ARIA-7: \"Semua kontrol sudah aktif. Antar paket ke Server B sebelum TTL habis!\"";
         _tutKeyCapText.text = TutorialWorldBuilder.IsTutorialWorldActive
-            ? "IKUTI PANAH KECIL -> SERAHKAN PAKET -> PORTAL WORLD 1 >>"
-            : "MISI AKTIF: MENUJU SERVER B DI UJUNG KANAN SEKTOR >>";
+            ? "Ikuti panah -> Serahkan Paket -> Portal World 1"
+            : "Antar paket ke Server B di ujung kanan";
         _tutProgressFillRt.anchorMax = Vector2.one;
         for (int i = 0; i < _tutStepPips.Length; i++) _tutStepPips[i].color = PixelUIKit.Mint;
     }
@@ -865,7 +865,7 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             _prologueRoot.transform,
             "TelemetryHeader",
-            "TRANSMISI PROLOG // PACKET COURIER CHRONICLES // AUDIO: BGM_TUTORIAL_SYNTH",
+            "PROLOG — TAHUN 2099",
             new Vector2(0.04f, 0.92f),
             new Vector2(0.70f, 0.985f),
             16,
@@ -877,8 +877,8 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
         PixelUIKit.CreateTactileButton(
             _prologueRoot.transform,
             "play",
-            "LEWATI OPENING",
-            "LANGSUNG KE LATIHAN KURIR",
+            "LEWATI",
+            "Langsung latihan",
             "TAB",
             new Vector2(0.76f, 0.92f),
             new Vector2(0.96f, 0.985f),
@@ -989,7 +989,7 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
         _prologueStageCaptionText = PixelUIKit.CreatePixelLabel(
             stagePill.transform,
             "StageCaptionText",
-            "LIVE STAGE // SAFE ZONE BUNKER: UNIT K-01 AKTIF",
+            "Prolog 1/4  •  Bunker Safe Zone",
             new Vector2(0.04f, 0.08f),
             new Vector2(0.96f, 0.92f),
             12,
@@ -1039,7 +1039,7 @@ public class CyberOpeningAndTutorialUI : MonoBehaviour
         _prologueSpeakerText = PixelUIKit.CreatePixelLabel(
             dialogDeck.transform,
             "SpeakerName",
-            "ARIA-7 // OPERATOR DISPATCH",
+            "ARIA-7",
             new Vector2(0.22f, 0.74f),
             new Vector2(0.96f, 0.91f),
             20,

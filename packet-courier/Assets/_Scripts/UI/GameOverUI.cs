@@ -115,8 +115,8 @@ public class GameOverUI : MonoBehaviour
             3
         );
         CreateSpriteBox(topStrip.transform, "StripSkull", new Vector2(0.015f, 0.20f), new Vector2(0.035f, 0.80f), PixelUIKit.GetIcon("skull"), PixelUIKit.Crimson);
-        PixelUIKit.CreatePixelLabel(topStrip.transform, "StripLeft", "EXCEPTION // CARRIER SIGNAL LOST", new Vector2(0.042f, 0f), new Vector2(0.55f, 1f), 15, PixelUIKit.Crimson, TextAnchor.MiddleLeft, false);
-        PixelUIKit.CreatePixelLabel(topStrip.transform, "StripRight", "GAMEPLAY FROZEN (TIME_SCALE: 0.00) // BGM: LOW-PASS MUFFLED", new Vector2(0.55f, 0f), new Vector2(0.985f, 1f), 13, PixelUIKit.TextMuted, TextAnchor.MiddleRight, true);
+        PixelUIKit.CreatePixelLabel(topStrip.transform, "StripLeft", "SINYAL TERPUTUS", new Vector2(0.042f, 0f), new Vector2(0.55f, 1f), 15, PixelUIKit.Crimson, TextAnchor.MiddleLeft, false);
+        PixelUIKit.CreatePixelLabel(topStrip.transform, "StripRight", "Coba lagi dari checkpoint atau awal stage", new Vector2(0.55f, 0f), new Vector2(0.985f, 1f), 13, PixelUIKit.TextMuted, TextAnchor.MiddleRight, true);
 
         // 2. Central Animated Pop-up Card (1180x660 reference proportion)
         var cardGo = new GameObject("DeathCard", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
@@ -166,7 +166,7 @@ public class GameOverUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             headerBanner.transform,
             "SignalTerminated",
-            "SIGNAL TERMINATED",
+            "SINYAL TERPUTUS",
             new Vector2(0.125f, 0.44f),
             new Vector2(0.74f, 0.90f),
             34,
@@ -178,7 +178,7 @@ public class GameOverUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             headerBanner.transform,
             "SubHeader",
-            "PACKET CORRUPTED // COURIER OFFLINE",
+            "Paket gagal terkirim • Kurir K-01 jatuh",
             new Vector2(0.125f, 0.12f),
             new Vector2(0.74f, 0.44f),
             15,
@@ -197,7 +197,7 @@ public class GameOverUI : MonoBehaviour
             new Color32(0, 0, 0, 0),
             2
         );
-        PixelUIKit.CreatePixelLabel(errBadge.transform, "ErrCode", "ERR_CODE // 0x443_DROP", Vector2.zero, Vector2.one, 12, PixelUIKit.CrimsonSoft, TextAnchor.MiddleCenter, false);
+        PixelUIKit.CreatePixelLabel(errBadge.transform, "ErrCode", "TTL HABIS", Vector2.zero, Vector2.one, 12, PixelUIKit.CrimsonSoft, TextAnchor.MiddleCenter, false);
 
         // Divider Line
         CreateFlatRect(cardGo.transform, "Divider", new Vector2(0.03f, 0.745f), new Vector2(0.97f, 0.750f), new Color(1f, 0.23f, 0.36f, 0.45f));
@@ -250,7 +250,7 @@ public class GameOverUI : MonoBehaviour
             skullSprite,
             Color.white
         );
-        PixelUIKit.CreatePixelLabel(showcaseBox.transform, "Cap", "UNIT #808 // CARRIER DOWN", new Vector2(0.06f, 0.04f), new Vector2(0.94f, 0.20f), 13, PixelUIKit.CrimsonSoft, TextAnchor.MiddleCenter, false);
+        PixelUIKit.CreatePixelLabel(showcaseBox.transform, "Cap", "KURIR K-01 • OFFLINE", new Vector2(0.06f, 0.04f), new Vector2(0.94f, 0.20f), 13, PixelUIKit.CrimsonSoft, TextAnchor.MiddleCenter, false);
 
         var logBox = PixelUIKit.CreateSteppedPanel(
             cardGo.transform,
@@ -262,13 +262,13 @@ public class GameOverUI : MonoBehaviour
             new Color32(0, 0, 0, 0),
             3
         );
-        PixelUIKit.CreatePixelLabel(logBox.transform, "LogTitle", "DIAGNOSTIC BLACK-BOX LOG", new Vector2(0.05f, 0.70f), new Vector2(0.95f, 0.94f), 12, PixelUIKit.TextMuted, TextAnchor.MiddleLeft, false);
-        PixelUIKit.CreatePixelLabel(logBox.transform, "Log1", $"> SIGNAL LOST AT W{world}-SEG{segment} ({worldName})", new Vector2(0.05f, 0.46f), new Vector2(0.95f, 0.68f), 12, PixelUIKit.CrimsonSoft, TextAnchor.MiddleLeft, true);
-        PixelUIKit.CreatePixelLabel(logBox.transform, "Log2", "> AUDIO BGM: MUFFLED LOW-PASS FILTER", new Vector2(0.05f, 0.25f), new Vector2(0.95f, 0.46f), 12, PixelUIKit.OrangeLight, TextAnchor.MiddleLeft, true);
-        PixelUIKit.CreatePixelLabel(logBox.transform, "Log3", $"> TCP NODE: {(hasCp ? "READY FOR INSTANT RESPAWN" : "INITIAL SEGMENT SPAWN")}", new Vector2(0.05f, 0.04f), new Vector2(0.95f, 0.25f), 12, PixelUIKit.Cyan, TextAnchor.MiddleLeft, true);
+        PixelUIKit.CreatePixelLabel(logBox.transform, "LogTitle", "CATATAN PERJALANAN", new Vector2(0.05f, 0.70f), new Vector2(0.95f, 0.94f), 12, PixelUIKit.TextMuted, TextAnchor.MiddleLeft, false);
+        PixelUIKit.CreatePixelLabel(logBox.transform, "Log1", $"> Lokasi: World {world} Stage {segment} ({worldName})", new Vector2(0.05f, 0.46f), new Vector2(0.95f, 0.68f), 12, PixelUIKit.CrimsonSoft, TextAnchor.MiddleLeft, true);
+        PixelUIKit.CreatePixelLabel(logBox.transform, "Log2", "> Data Bits & upgrade tetap tersimpan", new Vector2(0.05f, 0.25f), new Vector2(0.95f, 0.46f), 12, PixelUIKit.OrangeLight, TextAnchor.MiddleLeft, true);
+        PixelUIKit.CreatePixelLabel(logBox.transform, "Log3", $"> Checkpoint: {(hasCp ? "Siap ulang di checkpoint" : "Mulai dari awal stage")}", new Vector2(0.05f, 0.04f), new Vector2(0.95f, 0.25f), 12, PixelUIKit.Cyan, TextAnchor.MiddleLeft, true);
 
         // RIGHT COLUMN: Structured Debrief Rows + Tactile Recovery Actions
-        PixelUIKit.CreatePixelLabel(cardGo.transform, "DebriefHdr", "INCIDENT TELEMETRY & MISSION DEBRIEF", new Vector2(0.42f, 0.675f), new Vector2(0.97f, 0.725f), 14, PixelUIKit.TextMuted, TextAnchor.MiddleLeft, false);
+        PixelUIKit.CreatePixelLabel(cardGo.transform, "DebriefHdr", "RINCIAN MISI", new Vector2(0.42f, 0.675f), new Vector2(0.97f, 0.725f), 14, PixelUIKit.TextMuted, TextAnchor.MiddleLeft, false);
 
         CreateDebriefRow(
             cardGo.transform,

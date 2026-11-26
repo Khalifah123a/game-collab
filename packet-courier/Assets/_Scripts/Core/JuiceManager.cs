@@ -15,13 +15,14 @@ public class JuiceManager : MonoBehaviour
     public float defaultHitstopDuration = 0.05f;
 
     [Header("Screen Shake Config")]
-    public float traumaDecay = 1.6f;
-    public float maxShakeOffset = 0.45f;
-    public float maxShakeAngle = 2.5f;
+    public float traumaDecay = 2.4f;
+    public float maxShakeOffset = 0.24f;
+    public float maxShakeAngle = 1.6f;
 
     public static bool EnableScreenShake = true;
 
     private float _trauma;
+    private Vector3 _punchOffset;
     private Coroutine _hitstopCoroutine;
     private float _timeScaleBeforeHitstop = 1f;
     private bool _isHitstopping = false;
@@ -40,17 +41,24 @@ public class JuiceManager : MonoBehaviour
     private const int INITIAL_SPARK_POOL_SIZE = 36;
 
     public float CurrentTrauma => _trauma;
+    public bool IsHitstopping => _isHitstopping;
+    public Vector3 CurrentPunchOffset => EnableScreenShake ? _punchOffset : Vector3.zero;
 
     public Vector3 CurrentShakeOffset
     {
         get
         {
-            if (!EnableScreenShake || _trauma <= 0.001f) return Vector3.zero;
-            float shake = _trauma * _trauma; // Quadratic falloff
-            float time = Time.unscaledTime * 35f;
-            float x = (Mathf.PerlinNoise(_perlinSeedX, time) * 2f - 1f) * maxShakeOffset * shake;
-            float y = (Mathf.PerlinNoise(_perlinSeedY, time) * 2f - 1f) * maxShakeOffset * shake;
-            return new Vector3(x, y, 0f);
+            if (!EnableScreenShake) return Vector3.zero;
+            Vector3 total = _punchOffset;
+            if (_trauma > 0.001f)
+            {
+                float shake = _trauma * _trauma; // Quadratic falloff
+                float time = Time.unscaledTime * 42f;
+                float x = (Mathf.PerlinNoise(_perlinSeedX, time) * 2f - 1f) * maxShakeOffset * shake;
+                float y = (Mathf.PerlinNoise(_perlinSeedY, time) * 2f - 1f) * maxShakeOffset * shake;
+                total += new Vector3(x, y, 0f);
+            }
+            return total;
         }
     }
 
@@ -84,6 +92,14 @@ public class JuiceManager : MonoBehaviour
         {
             _trauma = Mathf.Max(0f, _trauma - traumaDecay * Time.unscaledDeltaTime);
         }
+        if (_punchOffset.sqrMagnitude > 0.00001f)
+        {
+            _punchOffset = Vector3.Lerp(_punchOffset, Vector3.zero, 18f * Time.unscaledDeltaTime);
+        }
+        else
+        {
+            _punchOffset = Vector3.zero;
+        }
 
         // Safety watchdog: Automatically restore Time.timeScale when hitstop duration expires
         if (_isHitstopping)
@@ -106,7 +122,7 @@ public class JuiceManager : MonoBehaviour
     }
 
     // -------------------------------------------------------------------------
-    // 1. Camera Shake (Trauma Model)
+    // 1. Camera Shake (Trauma Model) & Directional Impact Punch
     // -------------------------------------------------------------------------
     public static void Shake(float amount)
     {
@@ -114,6 +130,17 @@ public class JuiceManager : MonoBehaviour
         if (jm != null)
         {
             jm._trauma = Mathf.Clamp01(jm._trauma + amount);
+        }
+    }
+
+    public static void PunchCamera(Vector2 direction, float strength = 0.14f)
+    {
+        if (!EnableScreenShake || direction.sqrMagnitude < 0.0001f) return;
+        var jm = Ensure();
+        if (jm != null)
+        {
+            Vector2 n = direction.normalized * Mathf.Clamp(strength, 0f, 0.35f);
+            jm._punchOffset = new Vector3(n.x, n.y, 0f);
         }
     }
 
@@ -328,82 +355,85 @@ public class JuiceManager : MonoBehaviour
 
     public static void SpawnImpactSparks(Vector3 pos, Color? color = null, float facing = 0f)
     {
-        Color c = color ?? new Color(0.2f, 0.95f, 1f, 1f);
-        int sparkCount = 7;
+        Color c = color ?? new Color(0.85f, 0.98f, 1f, 1f);
+        int sparkCount = 5;
         for (int i = 0; i < sparkCount; i++)
         {
             var mover = GetPooledSpark();
             mover.transform.position = pos;
-            mover.SetColor(c);
-            mover.transform.localScale = Vector3.one * Random.Range(0.18f, 0.38f);
+            mover.SetColor(i == 0 ? Color.white : c);
+            Vector3 baseScale = new Vector3(Random.Range(0.42f, 0.80f), Random.Range(0.14f, 0.24f), 1f);
 
             Vector2 vel;
             if (facing != 0f)
             {
                 float baseAngle = facing > 0f ? 0f : 180f;
-                float angle = (baseAngle + Random.Range(-40f, 40f)) * Mathf.Deg2Rad;
-                float speed = Random.Range(5f, 12f);
+                float angle = (baseAngle + Random.Range(-32f, 32f)) * Mathf.Deg2Rad;
+                float speed = Random.Range(6f, 13f);
                 vel = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * speed;
             }
             else
             {
                 float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-                float speed = Random.Range(4f, 10f);
+                float speed = Random.Range(4.5f, 10f);
                 vel = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * speed;
             }
-            mover.Activate(vel, Random.Range(0.12f, 0.22f));
+            mover.Activate(vel, Random.Range(0.10f, 0.18f), digitalFlicker: false, alignToVelocity: true, initScale: baseScale);
         }
     }
 
     public static void SpawnDustPuff(Vector3 pos)
     {
-        int dustCount = 4;
-        Color dustCol = new Color(0.7f, 0.9f, 1f, 0.6f);
+        int dustCount = 3;
+        Color dustCol = new Color(0.75f, 0.85f, 0.92f, 0.48f);
         for (int i = 0; i < dustCount; i++)
         {
             var mover = GetPooledSpark();
-            mover.transform.position = pos + new Vector3(Random.Range(-0.35f, 0.35f), -0.4f, 0f);
+            float spread = (i - 1) * 0.22f + Random.Range(-0.08f, 0.08f);
+            mover.transform.position = pos + new Vector3(spread, -0.44f, 0f);
             mover.SetColor(dustCol);
-            mover.transform.localScale = Vector3.one * Random.Range(0.25f, 0.45f);
+            Vector3 baseScale = new Vector3(Random.Range(0.30f, 0.48f), Random.Range(0.22f, 0.34f), 1f);
 
-            Vector2 vel = new Vector2(Random.Range(-1.5f, 1.5f), Random.Range(0.4f, 1.6f));
-            mover.Activate(vel, 0.18f);
+            Vector2 vel = new Vector2(spread * 4.5f + Random.Range(-0.6f, 0.6f), Random.Range(0.35f, 1.15f));
+            mover.Activate(vel, 0.16f, digitalFlicker: false, alignToVelocity: false, initScale: baseScale);
         }
     }
 
     public static void SpawnWallSparks(Vector3 pos, int wallSide)
     {
-        Color c = new Color(0.35f, 0.85f, 1f, 0.85f);
+        Color c = new Color(0.75f, 0.94f, 1f, 0.72f);
         int count = 2;
         for (int i = 0; i < count; i++)
         {
             var mover = GetPooledSpark();
             mover.transform.position = pos + new Vector3(wallSide * 0.08f, Random.Range(-0.08f, 0.08f), 0f);
             mover.SetColor(c);
-            mover.transform.localScale = Vector3.one * Random.Range(0.12f, 0.22f);
+            Vector3 baseScale = new Vector3(Random.Range(0.28f, 0.45f), 0.14f, 1f);
 
             // Spray diagonally downward away from the wall
-            float angle = (-wallSide * 40f + Random.Range(-20f, 20f) - 90f) * Mathf.Deg2Rad;
-            float speed = Random.Range(2.5f, 5.5f);
+            float angle = (-wallSide * 40f + Random.Range(-18f, 18f) - 90f) * Mathf.Deg2Rad;
+            float speed = Random.Range(2.5f, 5.2f);
             Vector2 vel = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * speed;
-            mover.Activate(vel, Random.Range(0.10f, 0.16f));
+            mover.Activate(vel, Random.Range(0.09f, 0.14f), digitalFlicker: false, alignToVelocity: true, initScale: baseScale);
         }
     }
 
-    public static void SpawnDataDissolve(Vector3 pos, int count = 12, Color? color = null)
+    public static void SpawnDataDissolve(Vector3 pos, int count = 10, Color? color = null)
     {
-        Color c = color ?? new Color(0.15f, 1f, 0.75f, 1f); // Cyber neon matrix green/cyan
-        for (int i = 0; i < count; i++)
+        Color c = color ?? new Color(0.25f, 0.96f, 0.78f, 0.95f);
+        int clamped = Mathf.Clamp(count, 4, 16);
+        for (int i = 0; i < clamped; i++)
         {
             var mover = GetPooledSpark();
-            mover.transform.position = pos + new Vector3(Random.Range(-0.25f, 0.25f), Random.Range(-0.25f, 0.25f), 0f);
-            mover.SetColor(c);
-            mover.transform.localScale = Vector3.one * Random.Range(0.20f, 0.42f);
+            mover.transform.position = pos + new Vector3(Random.Range(-0.22f, 0.22f), Random.Range(-0.22f, 0.22f), 0f);
+            mover.SetColor(i % 3 == 0 ? Color.white : c);
+            float sz = Random.Range(0.20f, 0.38f);
+            Vector3 baseScale = new Vector3(sz, sz, 1f);
 
             float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-            float speed = Random.Range(3.5f, 8.5f);
+            float speed = Random.Range(3.2f, 7.8f);
             Vector2 vel = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * speed;
-            mover.Activate(vel, Random.Range(0.20f, 0.35f), true); // true for digital flicker
+            mover.Activate(vel, Random.Range(0.16f, 0.28f), digitalFlicker: true, alignToVelocity: false, initScale: baseScale);
         }
     }
 
@@ -411,21 +441,24 @@ public class JuiceManager : MonoBehaviour
     private static Sprite GetSparkSprite()
     {
         if (_sparkSprite != null) return _sparkSprite;
-        _sparkSprite = Resources.Load<Sprite>("GeneratedArt/key_e_ring");
-        if (_sparkSprite != null) return _sparkSprite;
 
-        var tex = new Texture2D(4, 4, TextureFormat.RGBA32, false);
+        // Crisp 4x4 point-filtered white pixel square (avoids noisy UI ring sprites on particles)
+        var tex = new Texture2D(4, 4, TextureFormat.RGBA32, false)
+        {
+            filterMode = FilterMode.Point,
+            wrapMode = TextureWrapMode.Clamp
+        };
         for (int x = 0; x < 4; x++)
             for (int y = 0; y < 4; y++)
                 tex.SetPixel(x, y, Color.white);
         tex.Apply();
-        _sparkSprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 4);
+        _sparkSprite = Sprite.Create(tex, new Rect(0, 0, 4, 4), new Vector2(0.5f, 0.5f), 16f);
         return _sparkSprite;
     }
 }
 
 /// <summary>
-/// Reusable pooled particle mover with velocity, drag, alpha fade, and optional digital flicker.
+/// Reusable pooled pixel particle mover with directional alignment, smooth shrink, drag, and alpha fade.
 /// </summary>
 public class SparkMover : MonoBehaviour
 {
@@ -434,7 +467,9 @@ public class SparkMover : MonoBehaviour
     private float _timer;
     private SpriteRenderer _sr;
     private Color _initColor;
+    private Vector3 _initScale = Vector3.one;
     private bool _digitalFlicker;
+    private bool _alignToVelocity;
 
     private void Awake()
     {
@@ -449,12 +484,24 @@ public class SparkMover : MonoBehaviour
         if (_sr != null) _sr.color = c;
     }
 
-    public void Activate(Vector2 initVelocity, float lifeDuration, bool digitalFlicker = false)
+    public void Activate(Vector2 initVelocity, float lifeDuration, bool digitalFlicker = false, bool alignToVelocity = false, Vector3? initScale = null)
     {
         velocity = initVelocity;
-        duration = lifeDuration;
+        duration = Mathf.Max(0.04f, lifeDuration);
         _timer = 0f;
         _digitalFlicker = digitalFlicker;
+        _alignToVelocity = alignToVelocity;
+        _initScale = initScale ?? transform.localScale;
+        transform.localScale = _initScale;
+        if (_alignToVelocity && velocity.sqrMagnitude > 0.01f)
+        {
+            float angleDeg = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+            transform.localRotation = Quaternion.Euler(0f, 0f, angleDeg);
+        }
+        else
+        {
+            transform.localRotation = Quaternion.identity;
+        }
         if (_sr == null) _sr = GetComponent<SpriteRenderer>();
         if (_sr != null) _sr.color = _initColor;
     }
@@ -463,17 +510,19 @@ public class SparkMover : MonoBehaviour
     {
         _timer += Time.unscaledDeltaTime;
         transform.position += (Vector3)(velocity * Time.unscaledDeltaTime);
-        velocity *= (1f - 4f * Time.unscaledDeltaTime); // Drag
+        velocity *= Mathf.Max(0f, 1f - 5.5f * Time.unscaledDeltaTime);
+
+        float t = Mathf.Clamp01(_timer / duration);
+        transform.localScale = Vector3.Lerp(_initScale, _initScale * 0.25f, t);
 
         if (_sr != null)
         {
-            float t = Mathf.Clamp01(_timer / duration);
             Color c = _initColor;
-            c.a = Mathf.Lerp(_initColor.a, 0f, t);
+            c.a = Mathf.Lerp(_initColor.a, 0f, t * t);
 
-            if (_digitalFlicker && Random.value < 0.25f)
+            if (_digitalFlicker && Random.value < 0.18f)
             {
-                c.a *= 0.35f; // Electronic matrix flicker
+                c.a *= 0.45f;
             }
 
             _sr.color = c;

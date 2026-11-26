@@ -560,12 +560,12 @@ public class MenuUI : MonoBehaviour
 
         var tagBox = CreateSpriteImage(botBar.transform, "PromptTag", _crestCrimsonSpr, new Vector2(0.025f, 0.12f), new Vector2(0.15f, 0.82f), Color.white);
         tagBox.type = Image.Type.Simple;
-        PixelUIKit.CreatePixelLabel(tagBox.transform, "TagLbl", "INFO KOMANDO", new Vector2(0.08f, 0.10f), new Vector2(0.92f, 0.90f), 12, ColStarkWhite, TextAnchor.MiddleCenter, false);
+        PixelUIKit.CreatePixelLabel(tagBox.transform, "TagLbl", "INFO", new Vector2(0.08f, 0.10f), new Vector2(0.92f, 0.90f), 12, ColStarkWhite, TextAnchor.MiddleCenter, false);
 
         _contextRibbonText = PixelUIKit.CreatePixelLabel(
             botBar.transform,
             "ContextDescription",
-            "Mulai dari World 00: Simulasi Tutorial untuk berlatih mekanik, lalu lanjut ke World 1: Localhost.",
+            "Mulai dari Tutorial (World 0) untuk latihan singkat, lalu lanjut ke World 1.",
             new Vector2(0.165f, 0.08f),
             new Vector2(0.64f, 0.84f),
             14,
@@ -576,7 +576,7 @@ public class MenuUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             botBar.transform,
             "ShortcutLegend",
-            "[W/S] PILIH   [ENTER] EKSEKUSI   [A/D] GANTI SEKTOR   [T] TUTORIAL   [ESC] KELUAR",
+            "[W/S] Pilih   [ENTER] Mulai   [A/D] Ganti World   [T] Latihan   [ESC] Keluar",
             new Vector2(0.65f, 0.08f),
             new Vector2(0.975f, 0.84f),
             12,
@@ -651,7 +651,7 @@ public class MenuUI : MonoBehaviour
 
         // 3D Crimson Parallelogram Tag inside Courier Blade
         var verBadge = CreateSpriteImage(blackBlade.transform, "ReloadTag", _crestCrimsonSpr, new Vector2(0.71f, 0.18f), new Vector2(0.95f, 0.86f), Color.white);
-        PixelUIKit.CreatePixelLabel(verBadge.transform, "ReloadTxt", "RELOAD", new Vector2(0.08f, 0.12f), new Vector2(0.92f, 0.90f), 12, ColStarkWhite, TextAnchor.MiddleCenter, false);
+        PixelUIKit.CreatePixelLabel(verBadge.transform, "ReloadTxt", "v1.0", new Vector2(0.08f, 0.12f), new Vector2(0.92f, 0.90f), 12, ColStarkWhite, TextAnchor.MiddleCenter, false);
     }
 
     private void BuildP3RKineticMenuStack(Transform parent)
@@ -661,11 +661,11 @@ public class MenuUI : MonoBehaviour
         _activeCursorArrowRt = pointerImg.rectTransform;
 
         string startLabel = _defaultWorldIndex < 0
-            ? "MULAI TUTORIAL  [W0]"
-            : $"MULAI MISI  [W{_defaultWorldIndex + 1}]";
+            ? "MULAI BERMAIN"
+            : $"MULAI WORLD {_defaultWorldIndex + 1}";
         string startSub = _defaultWorldIndex < 0
-            ? "WORLD KHUSUS AWAL // 4 ZONA LATIHAN -> WORLD 1"
-            : $"SEKTOR: {WorldRules.Title(_defaultWorldIndex).ToUpperInvariant()} // {WorldRules.Segments(_defaultWorldIndex)} STAGE";
+            ? "Tutorial & Awal Cerita  •  4 Zona Latihan"
+            : $"{WorldRules.Title(_defaultWorldIndex)}  •  {WorldRules.Segments(_defaultWorldIndex)} Stage";
 
         AddKineticBlade(
             parent,
@@ -675,7 +675,7 @@ public class MenuUI : MonoBehaviour
             title: startLabel,
             subtitle: startSub,
             keyHint: "ENTER",
-            description: "Terjun ke World yang dipilih (World 00 Tutorial untuk pemula, atau World 1 - 5 ekspedisi utama).",
+            description: "Langsung main di World yang sedang dipilih.",
             aMin: new Vector2(0.046f, 0.555f),
             aMax: new Vector2(0.468f, 0.652f),
             isDanger: false,
@@ -686,10 +686,10 @@ public class MenuUI : MonoBehaviour
             index: 1,
             numTag: "02",
             iconName: "terminal",
-            title: "DUNIA TUTORIAL  [W0]",
-            subtitle: "WORLD KHUSUS AWAL // PROLOG + 4 ZONA LATIHAN",
-            keyHint: "KEY T",
-            description: "Masuk ke World 00: Simulasi Tutorial untuk menyaksikan prolog cerita 2099 dan melatih seluruh mekanik kurir sebelum World 1.",
+            title: "LATIHAN",
+            subtitle: "Ulangi Tutorial & Prolog",
+            keyHint: "T",
+            description: "Ulangi prolog cerita dan arena latihan dasar sebelum berangkat.",
             aMin: new Vector2(0.058f, 0.446f),
             aMax: new Vector2(0.480f, 0.543f),
             isDanger: false,
@@ -700,10 +700,10 @@ public class MenuUI : MonoBehaviour
             index: 2,
             numTag: "03",
             iconName: "route",
-            title: "PILIH SEKTOR & BOSS RUSH",
-            subtitle: "PETA WORLD 1 - 5 & TANTANGAN 3 BOSS",
+            title: "PILIH WORLD",
+            subtitle: "World 0 - 5 & Boss Rush",
             keyHint: "TAB",
-            description: "Buka peta jaringan penuh untuk memilih World 1 sampai World 5 atau masuk ke mode Boss Rush.",
+            description: "Pilih World 0 sampai World 5 atau tantang mode Boss Rush.",
             aMin: new Vector2(0.070f, 0.337f),
             aMax: new Vector2(0.492f, 0.434f),
             isDanger: false,
@@ -714,10 +714,10 @@ public class MenuUI : MonoBehaviour
             index: 3,
             numTag: "04",
             iconName: "keys",
-            title: "KONTROL & SISTEM",
-            subtitle: "TOMBOL, TOUCH MOBILE & GETAR GAMEPAD",
-            keyHint: "KEY C",
-            description: "Lihat panduan tombol lengkap serta atur kontrol sentuh mobile dan efek getar gamepad.",
+            title: "PENGATURAN",
+            subtitle: "Kontrol, Sentuh & Getar",
+            keyHint: "C",
+            description: "Lihat daftar tombol dan atur kontrol sentuh serta getar gamepad.",
             aMin: new Vector2(0.082f, 0.228f),
             aMax: new Vector2(0.504f, 0.325f),
             isDanger: false,
@@ -728,10 +728,10 @@ public class MenuUI : MonoBehaviour
             index: 4,
             numTag: "05",
             iconName: "power",
-            title: "PUTUSKAN KONEKSI",
-            subtitle: "KELUAR DARI TERMINAL PACKET COURIER",
+            title: "KELUAR",
+            subtitle: "Tutup Game",
             keyHint: "ESC",
-            description: "Simpan sesi logistik saat ini dan keluar menuju desktop.",
+            description: "Keluar dari permainan.",
             aMin: new Vector2(0.094f, 0.119f),
             aMax: new Vector2(0.516f, 0.216f),
             isDanger: true,
@@ -894,7 +894,7 @@ public class MenuUI : MonoBehaviour
 
         var whiteStep = CreateSpriteImage(stageRoot.transform, "PedestalWhiteTop", _bladeSelectedWhiteSpr, new Vector2(0.08f, 0.28f), new Vector2(0.88f, 0.35f), Color.white);
         whiteStep.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -7f);
-        PixelUIKit.CreatePixelLabel(whiteStep.transform, "HeroUnitTag", "UNIT K-01 // PACKET COURIER PROTOTYPE", new Vector2(0.08f, 0.14f), new Vector2(0.92f, 0.90f), 12, ColAbyssNavy, TextAnchor.MiddleCenter, false);
+        PixelUIKit.CreatePixelLabel(whiteStep.transform, "HeroUnitTag", "KURIR K-01", new Vector2(0.08f, 0.14f), new Vector2(0.92f, 0.90f), 12, ColAbyssNavy, TextAnchor.MiddleCenter, false);
 
         // Load Hero Courier Frames
         var frames = new List<Sprite>();
@@ -943,8 +943,8 @@ public class MenuUI : MonoBehaviour
         ariaCard.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -3.5f);
         var ariaPort = CreateSpriteImage(ariaCard.transform, "AriaAvatar", CyberOpeningAndTutorialUI.GetOperatorPortraitSprite(), new Vector2(0.06f, 0.16f), new Vector2(0.28f, 0.86f), Color.white);
         ariaPort.preserveAspect = true;
-        PixelUIKit.CreatePixelLabel(ariaCard.transform, "AriaTitle", "OPERATOR ARIA-7", new Vector2(0.31f, 0.54f), new Vector2(0.94f, 0.86f), 12, ColP3Cyan, TextAnchor.MiddleLeft, false);
-        PixelUIKit.CreatePixelLabel(ariaCard.transform, "AriaQuote", "\"Sinyal siap. Pilih sektor atau tekan [T] untuk latihan!\"", new Vector2(0.31f, 0.16f), new Vector2(0.94f, 0.54f), 10, ColStarkWhite, TextAnchor.MiddleLeft, true);
+        PixelUIKit.CreatePixelLabel(ariaCard.transform, "AriaTitle", "ARIA-7", new Vector2(0.31f, 0.54f), new Vector2(0.94f, 0.86f), 12, ColP3Cyan, TextAnchor.MiddleLeft, false);
+        PixelUIKit.CreatePixelLabel(ariaCard.transform, "AriaQuote", "\"Siap berangkat? Pilih World atau mulai dari Latihan.\"", new Vector2(0.31f, 0.16f), new Vector2(0.94f, 0.54f), 10, ColStarkWhite, TextAnchor.MiddleLeft, true);
 
         // Bottom-Right 3D Quick Sector Switcher Card (NO RectMask2D on rotated card!)
         CreateSpriteImage(stageRoot.transform, "SectorCardWing", _bladeWingCyanSpr, new Vector2(0.05f, 0.01f), new Vector2(0.97f, 0.21f), Color.white).rectTransform.localRotation = Quaternion.Euler(0f, 0f, -2.5f);
@@ -952,7 +952,7 @@ public class MenuUI : MonoBehaviour
         sectorCard.rectTransform.localRotation = Quaternion.Euler(0f, 0f, -2.5f);
         sectorCard.raycastTarget = true;
 
-        PixelUIKit.CreatePixelLabel(sectorCard.transform, "SecHeader", "TARGET EKSPEDISI AKTIF  //  GANTI CEPAT [A / D]", new Vector2(0.16f, 0.66f), new Vector2(0.84f, 0.88f), 11, ColP3Cyan, TextAnchor.MiddleCenter, true);
+        PixelUIKit.CreatePixelLabel(sectorCard.transform, "SecHeader", "PILIH WORLD  •  [A / D]", new Vector2(0.16f, 0.66f), new Vector2(0.84f, 0.88f), 11, ColP3Cyan, TextAnchor.MiddleCenter, true);
 
         _sectorPreviewTitleText = PixelUIKit.CreatePixelLabel(
             sectorCard.transform,
@@ -1019,40 +1019,40 @@ public class MenuUI : MonoBehaviour
         {
             if (_sectorPreviewTitleText != null)
             {
-                _sectorPreviewTitleText.text = "WORLD 00 // SIMULASI TUTORIAL";
+                _sectorPreviewTitleText.text = "WORLD 00 — TUTORIAL";
             }
             if (_sectorPreviewMetaText != null)
             {
-                _sectorPreviewMetaText.text = "WORLD KHUSUS AWAL   |   4 ZONA LATIHAN   |   KELULUSAN -> WORLD 1";
+                _sectorPreviewMetaText.text = "4 Zona Latihan  •  Lanjut ke World 1";
             }
             if (_blades.Count > 0 && _blades[0].TitleText != null)
             {
-                string t = "MULAI TUTORIAL  [W0]";
+                string t = "MULAI BERMAIN";
                 _blades[0].TitleText.text = t;
                 if (_blades[0].TitleShadowText != null) _blades[0].TitleShadowText.text = t;
-                _blades[0].SubText.text = "WORLD KHUSUS AWAL // PROLOG + 4 ZONA LATIHAN -> WORLD 1";
+                _blades[0].SubText.text = "Tutorial & Awal Cerita  •  4 Zona Latihan";
             }
             return;
         }
 
-        string wTitle = WorldRules.Title(_defaultWorldIndex).ToUpperInvariant();
+        string wTitle = WorldRules.Title(_defaultWorldIndex);
         int segs = WorldRules.Segments(_defaultWorldIndex);
         float ttl = WorldRules.TTL(_defaultWorldIndex);
 
         if (_sectorPreviewTitleText != null)
         {
-            _sectorPreviewTitleText.text = $"WORLD 0{_defaultWorldIndex + 1} // {wTitle}";
+            _sectorPreviewTitleText.text = $"WORLD 0{_defaultWorldIndex + 1} — {wTitle.ToUpperInvariant()}";
         }
         if (_sectorPreviewMetaText != null)
         {
-            _sectorPreviewMetaText.text = $"{segs} STAGE   |   BATAS WAKTU TTL: {ttl:0} DETIK   |   STATUS: SIAP";
+            _sectorPreviewMetaText.text = $"{segs} Stage  •  TTL {ttl:0} Detik";
         }
         if (_blades.Count > 0 && _blades[0].TitleText != null)
         {
-            string t = $"MULAI MISI  [W{_defaultWorldIndex + 1}]";
+            string t = $"MULAI WORLD {_defaultWorldIndex + 1}";
             _blades[0].TitleText.text = t;
             if (_blades[0].TitleShadowText != null) _blades[0].TitleShadowText.text = t;
-            _blades[0].SubText.text = $"SEKTOR: {wTitle} // {segs} STAGE (TTL {ttl:0}s)";
+            _blades[0].SubText.text = $"{wTitle}  •  {segs} Stage  •  TTL {ttl:0}s";
         }
     }
 
@@ -1111,14 +1111,14 @@ public class MenuUI : MonoBehaviour
             4);
 
         var hdr = CreateSpriteImage(modal.transform, "WhiteHeaderBar", _bladeSelectedWhiteSpr, new Vector2(0.04f, 0.895f), new Vector2(0.96f, 0.970f), Color.white);
-        PixelUIKit.CreatePixelLabel(hdr.transform, "ModalTitle", "PILIH SEKTOR EKSPEDISI  //  WORLD 0 - 5", new Vector2(0.06f, 0.12f), new Vector2(0.94f, 0.92f), 22, ColAbyssNavy, TextAnchor.MiddleCenter, false);
+        PixelUIKit.CreatePixelLabel(hdr.transform, "ModalTitle", "PILIH WORLD (0 - 5)", new Vector2(0.06f, 0.12f), new Vector2(0.94f, 0.92f), 22, ColAbyssNavy, TextAnchor.MiddleCenter, false);
 
         // World 00: Dedicated Initial Tutorial World
         PixelUIKit.CreateTactileButton(
             modal.transform,
             "terminal",
-            "00 // SIMULASI TUTORIAL [WORLD AWAL]",
-            "ARENA LATIHAN 4 ZONA: DOUBLE JUMP, PLATFORM BERGERAK, DASH & PAKET -> WORLD 1",
+            "00 — TUTORIAL",
+            "Latihan Lompat, Platform Bergerak, Dash & Antar Paket",
             "W0",
             new Vector2(0.06f, 0.785f),
             new Vector2(0.94f, 0.875f),
@@ -1135,9 +1135,9 @@ public class MenuUI : MonoBehaviour
             float bot = top - 0.088f;
 
             string title = unlocked
-                ? $"0{world + 1} // {WorldRules.Title(world).ToUpperInvariant()}" + (isBoss ? " [FINAL BOSS]" : "")
-                : $"0{world + 1} // {WorldRules.Title(world).ToUpperInvariant()} [TERKUNCI]";
-            string sub = $"{WorldRules.Segments(world)} STAGE | BATAS WAKTU TTL: {WorldRules.TTL(world):0} DETIK";
+                ? $"0{world + 1} — {WorldRules.Title(world).ToUpperInvariant()}" + (isBoss ? " (BOSS)" : "")
+                : $"0{world + 1} — {WorldRules.Title(world).ToUpperInvariant()} [TERKUNCI]";
+            string sub = $"{WorldRules.Segments(world)} Stage  •  TTL {WorldRules.TTL(world):0} Detik";
 
             PixelUIKit.CreateTactileButton(
                 modal.transform,
@@ -1163,8 +1163,8 @@ public class MenuUI : MonoBehaviour
         PixelUIKit.CreateTactileButton(
             modal.transform,
             "skull",
-            "BOSS RUSH GAUNTLET // TANTANGAN 3 BOSS",
-            "LAWAN THE CENSOR -> SOLARIS -> ROOTKIT CORE SECARA BERUNTUN",
+            "BOSS RUSH",
+            "Lawan 3 Boss Ground berturut-turut",
             "RUSH",
             new Vector2(0.06f, 0.165f),
             new Vector2(0.94f, 0.253f),
@@ -1174,8 +1174,8 @@ public class MenuUI : MonoBehaviour
         PixelUIKit.CreateTactileButton(
             modal.transform,
             "back",
-            "KEMBALI KE MENU UTAMA",
-            "TUTUP PETA EKSPEDISI",
+            "KEMBALI",
+            "Tutup daftar World",
             "ESC",
             new Vector2(0.24f, 0.030f),
             new Vector2(0.76f, 0.115f),
@@ -1218,26 +1218,26 @@ public class MenuUI : MonoBehaviour
             4);
 
         var hdr = CreateSpriteImage(modal.transform, "WhiteHeaderBar", _bladeSelectedWhiteSpr, new Vector2(0.04f, 0.87f), new Vector2(0.96f, 0.96f), Color.white);
-        PixelUIKit.CreatePixelLabel(hdr.transform, "Title", "KONTROL & PENGATURAN SISTEM", new Vector2(0.06f, 0.12f), new Vector2(0.94f, 0.92f), 22, ColAbyssNavy, TextAnchor.MiddleCenter, false);
+        PixelUIKit.CreatePixelLabel(hdr.transform, "Title", "PENGATURAN & KONTROL", new Vector2(0.06f, 0.12f), new Vector2(0.94f, 0.92f), 22, ColAbyssNavy, TextAnchor.MiddleCenter, false);
 
         string controlsText =
-            "GERAK KIRI / KANAN:   [A / D] atau [Panah Kiri / Kanan]\n\n" +
-            "LOMPAT / DOUBLE JUMP: [Space] (Tekan 2x di udara)\n\n" +
-            "PHASE DASH (KEBAL):   [Left Shift] (Menembus serangan & bahaya)\n\n" +
-            "WALL CLING (PANJAT):  Tahan arah ke dinding saat di udara\n\n" +
-            "SERANGAN & PARRY:     [Klik Kiri / J] Tebas  |  [Q / Klik Kanan] Nano Parry\n\n" +
-            "INTERAKSI & TUTORIAL: [E] Bicara NPC / Ambil Paket  |  [F1] Ulang Tutorial";
+            "GERAK:        [A / D] atau Panah Kiri / Kanan\n\n" +
+            "LOMPAT:       [Space] (Tekan 2x untuk Double Jump)\n\n" +
+            "DASH:         [Left Shift] (Kebal sesaat saat melesat)\n\n" +
+            "WALL CLING:   Tahan arah ke dinding saat di udara\n\n" +
+            "SERANG/PARRY: [Klik Kiri / J] Tebas  •  [Q / Klik Kanan] Parry\n\n" +
+            "INTERAKSI:    [E] NPC & Paket  •  [F1] Ulang Tutorial";
 
         var label = PixelUIKit.CreatePixelLabel(modal.transform, "ControlsBody", controlsText, new Vector2(0.08f, 0.38f), new Vector2(0.92f, 0.84f), 15, ColStarkWhite, TextAnchor.MiddleLeft, true);
         label.lineSpacing = 1.15f;
 
-        string touchState = TouchControlsUI.IsTouchEnabled ? "[AKTIF]" : "[NONAKTIF]";
+        string touchState = TouchControlsUI.IsTouchEnabled ? "AKTIF" : "MATI";
         PixelUIKit.CreateTactileButton(
             modal.transform,
             "mobile",
-            "TOUCH CONTROLS: " + touchState,
-            "TOMBOL VIRTUAL LAYAR SENTUH UNTUK MOBILE",
-            "TOGGLE",
+            "KONTROL SENTUH: " + touchState,
+            "Tombol virtual untuk layar sentuh",
+            "UBAH",
             new Vector2(0.06f, 0.21f),
             new Vector2(0.48f, 0.33f),
             TouchControlsUI.IsTouchEnabled ? PixelUIKit.ButtonTheme.PrimaryCyan : PixelUIKit.ButtonTheme.SecondarySlate,
@@ -1248,13 +1248,13 @@ public class MenuUI : MonoBehaviour
                 _settingsPanel.SetActive(true);
             });
 
-        string rumbleState = GamepadControllerSupport.EnableVibration ? "[AKTIF]" : "[NONAKTIF]";
+        string rumbleState = GamepadControllerSupport.EnableVibration ? "AKTIF" : "MATI";
         PixelUIKit.CreateTactileButton(
             modal.transform,
             "vibrate",
             "GETAR GAMEPAD: " + rumbleState,
-            "EFEK GETAR HAPTIC PADA CONTROLLER",
-            "TOGGLE",
+            "Efek getar pada controller",
+            "UBAH",
             new Vector2(0.52f, 0.21f),
             new Vector2(0.94f, 0.33f),
             GamepadControllerSupport.EnableVibration ? PixelUIKit.ButtonTheme.PrimaryCyan : PixelUIKit.ButtonTheme.SecondarySlate,
@@ -1268,8 +1268,8 @@ public class MenuUI : MonoBehaviour
         PixelUIKit.CreateTactileButton(
             modal.transform,
             "back",
-            "KEMBALI KE MENU UTAMA",
-            "SIMPAN & TUTUP PENGATURAN",
+            "KEMBALI",
+            "Simpan & tutup pengaturan",
             "ESC",
             new Vector2(0.24f, 0.05f),
             new Vector2(0.76f, 0.16f),

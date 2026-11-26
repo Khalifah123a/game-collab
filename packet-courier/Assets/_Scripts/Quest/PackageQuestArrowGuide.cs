@@ -227,7 +227,7 @@ public class PackageQuestArrowGuide : MonoBehaviour
 
                 _arrowHeadRenderer.color = cyanPulse;
                 _orbitLabelTransform.position = arrowPos + new Vector3(0f, 0.42f, 0f);
-                _orbitLabelText.text = $"WAJIB: AMBIL PAKET [E] ({Mathf.RoundToInt(dist)}m)";
+                _orbitLabelText.text = $"AMBIL PAKET [E] ({Mathf.RoundToInt(dist)}m)";
                 _orbitLabelText.color = cyanPulse;
             }
 
@@ -238,7 +238,7 @@ public class PackageQuestArrowGuide : MonoBehaviour
             _npcBeaconArrowSr.transform.localScale = Vector3.one * (1.15f + 0.12f * Mathf.Sin(t * 9f));
             _npcBeaconArrowSr.color = cyanPulse;
             _npcBeaconPlateSr.color = new Color(0.03f, 0.09f, 0.18f, 0.94f);
-            _npcBeaconText.text = "WAJIB: AMBIL PAKET [E]";
+            _npcBeaconText.text = "AMBIL PAKET [E]";
             _npcBeaconText.color = cyanPulse;
             return;
         }
@@ -281,8 +281,8 @@ public class PackageQuestArrowGuide : MonoBehaviour
 
                 _arrowHeadRenderer.color = mintColor;
                 _orbitLabelTransform.position = arrowPos + new Vector3(0f, 0.34f, 0f);
-                string targetLabel = _receiverNpc != null ? "PENERIMA PAKET" : "SERVER B";
-                _orbitLabelText.text = $"{targetLabel} >> {Mathf.RoundToInt(dist)}m";
+                string targetLabel = _receiverNpc != null ? "PENERIMA" : "SERVER B";
+                _orbitLabelText.text = $"{targetLabel} ({Mathf.RoundToInt(dist)}m)";
                 _orbitLabelText.color = mintColor;
             }
 
@@ -296,7 +296,7 @@ public class PackageQuestArrowGuide : MonoBehaviour
                 _npcBeaconArrowSr.transform.localScale = Vector3.one * 1.0f;
                 _npcBeaconArrowSr.color = mintColor;
                 _npcBeaconPlateSr.color = new Color(0.03f, 0.14f, 0.10f, 0.94f);
-                _npcBeaconText.text = _receiverNpc != null ? "SERAHKAN PAKET [E]" : "MENUJU STAGE BERIKUTNYA >>";
+                _npcBeaconText.text = _receiverNpc != null ? "SERAHKAN [E]" : "STAGE BERIKUTNYA";
                 _npcBeaconText.color = mintColor;
             }
             return;
@@ -326,7 +326,7 @@ public class PackageQuestArrowGuide : MonoBehaviour
                 _arrowHeadRenderer.color = goldCol;
 
                 _orbitLabelTransform.position = arrowPos + new Vector3(0f, 0.34f, 0f);
-                _orbitLabelText.text = $"PORTAL TERBUKA >> {Mathf.RoundToInt(dist)}m";
+                _orbitLabelText.text = $"PORTAL ({Mathf.RoundToInt(dist)}m)";
                 _orbitLabelText.color = goldCol;
             }
 
@@ -338,7 +338,7 @@ public class PackageQuestArrowGuide : MonoBehaviour
                 _npcBeaconArrowSr.transform.localScale = Vector3.one * 0.95f;
                 _npcBeaconArrowSr.color = goldCol;
                 _npcBeaconPlateSr.color = new Color(0.14f, 0.10f, 0.02f, 0.94f);
-                _npcBeaconText.text = "MASUK GATEWAY SERVER B";
+                _npcBeaconText.text = "PORTAL";
                 _npcBeaconText.color = goldCol;
             }
         }

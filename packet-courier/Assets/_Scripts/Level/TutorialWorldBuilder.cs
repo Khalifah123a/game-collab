@@ -158,8 +158,8 @@ public static class TutorialWorldBuilder
         CreateFloatingHoloLabel(
             root,
             new Vector3(12.5f, -9.6f, 0f),
-            "ZONA 01 // DOUBLE JUMP",
-            "Tekan [SPACE] 2x di udara untuk melompat ke platform atas",
+            "1. DOUBLE JUMP",
+            "Tekan [SPACE] 2x di udara",
             new Color(0.22f, 0.98f, 0.65f, 1f));
 
         CreateTrainingPlatform(root, "TutPlat_Z1_Low", new Vector2(9.5f, -15.2f), new Vector2(3.6f, 0.55f));
@@ -174,8 +174,8 @@ public static class TutorialWorldBuilder
         CreateFloatingHoloLabel(
             root,
             new Vector3(32.0f, -8.8f, 0f),
-            "ZONA 02 // PLATFORM BERGERAK",
-            "Naiki platform bergerak lalu tekan [SPACE 2x] ke dek atas",
+            "2. PLATFORM BERGERAK",
+            "Naiki platform, lalu Double Jump ke atas",
             new Color(0f, 0.94f, 1f, 1f));
 
         CreateMovingTrainingPlatform(
@@ -198,8 +198,8 @@ public static class TutorialWorldBuilder
         CreateFloatingHoloLabel(
             root,
             new Vector3(52.5f, -11.4f, 0f),
-            "ZONA 03 // PHASE DASH & COMBAT",
-            "[LEFT SHIFT] Dash (Kebal)  |  [KLIK KIRI / J] Tebas Musuh  |  [Q] Parry",
+            "3. DASH & SERANG",
+            "[SHIFT] Dash  •  [KLIK / J] Tebas  •  [Q] Parry",
             new Color(1f, 0.72f, 0.22f, 1f));
 
         SpawnGenuinePatrolMonster(root, new Vector2(52.5f, -16.4f));
@@ -210,8 +210,8 @@ public static class TutorialWorldBuilder
         CreateFloatingHoloLabel(
             root,
             new Vector3(64.5f, -10.2f, 0f),
-            "ZONA 04 // KELULUSAN -> WORLD 1",
-            "Masuk Safe Zone -> Serahkan Paket [E] -> Portal Server B",
+            "4. SERAHKAN PAKET -> WORLD 1",
+            "Serahkan paket [E] lalu masuk Portal",
             new Color(0.22f, 0.98f, 0.65f, 1f));
     }
 

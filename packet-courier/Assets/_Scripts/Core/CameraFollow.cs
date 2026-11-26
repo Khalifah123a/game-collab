@@ -16,6 +16,8 @@ public class CameraFollow : MonoBehaviour
     private Camera cam;
     private PlayerController player;
     private Vector3 followVelocity;
+    private Vector3 _basePosition;
+    private bool _basePosInitialized;
     private float lookAhead, lookVelocity;
 
     private bool _arenaLocked;
@@ -53,13 +55,28 @@ public class CameraFollow : MonoBehaviour
         {
             player = target.GetComponent<PlayerController>();
             lookAhead = offset.x * (player ? player.FacingDir : 1);
-            transform.position = target.position + new Vector3(lookAhead, offset.y, offset.z);
+            _basePosition = target.position + new Vector3(lookAhead, offset.y, offset.z);
+            _basePosInitialized = true;
+            transform.position = _basePosition;
         }
     }
 
     private void LateUpdate()
     {
-        if (Time.timeScale == 0) return;
+        bool hitstopping = JuiceManager.Instance != null && JuiceManager.Instance.IsHitstopping;
+        if (Time.timeScale == 0 && !hitstopping) return;
+
+        if (hitstopping)
+        {
+            // Keep crisp micro-vibration alive during hitstop freeze-frames without drifting base camera position
+            if (_basePosInitialized)
+            {
+                Vector3 hitShake = JuiceManager.Instance.CurrentShakeOffset;
+                transform.position = _basePosition + hitShake;
+            }
+            return;
+        }
+
         if (target == null)
         {
             player = FindAnyObjectByType<PlayerController>();
@@ -68,6 +85,11 @@ public class CameraFollow : MonoBehaviour
         }
 
         if (!player) player = target.GetComponent<PlayerController>();
+        if (!_basePosInitialized)
+        {
+            _basePosition = transform.position;
+            _basePosInitialized = true;
+        }
 
         float desiredOrtho = _arenaLocked ? _arenaOrthoSize : orthoSize;
         if (cam)
@@ -114,7 +136,8 @@ public class CameraFollow : MonoBehaviour
             desiredPos = target.position + new Vector3(lookAhead, offset.y, offset.z);
         }
 
+        _basePosition = Vector3.SmoothDamp(_basePosition, desiredPos, ref followVelocity, 0.12f);
         Vector3 shake = JuiceManager.Instance != null ? JuiceManager.Instance.CurrentShakeOffset : Vector3.zero;
-        transform.position = Vector3.SmoothDamp(transform.position, desiredPos, ref followVelocity, 0.12f) + shake;
+        transform.position = _basePosition + shake;
     }
 }

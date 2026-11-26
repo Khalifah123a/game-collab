@@ -474,13 +474,13 @@ public class GameplayHUD : MonoBehaviour
         var leftBarRt = CreateTopLeftBox("Quest_LeftAccentBar", _vitalsRigRt, new Vector2(18f, -132f), new Vector2(4f, 46f));
         _questLeftBarImg = AddSolidImage(leftBarRt, TacticalHUDGraphics.ColElectricCyan);
 
-        _questHeaderText = PlaceText("Quest_HeaderTag", _vitalsRigRt, "MISI WAJIB [1/2] // PROTOKOL PAKET",
+        _questHeaderText = PlaceText("Quest_HeaderTag", _vitalsRigRt, "MISI UTAMA",
             new Vector2(28f, -131f), new Vector2(328f, 15f), 9, TacticalHUDGraphics.ColElectricCyan, TextAnchor.MiddleLeft, mono: false);
 
-        _questPrimaryText = PlaceText("Quest_PrimaryObjective", _vitalsRigRt, "► AMBIL PAKET DATA DI NPC KURIR [E]",
+        _questPrimaryText = PlaceText("Quest_PrimaryObjective", _vitalsRigRt, "Ambil paket di NPC Kurir [E]",
             new Vector2(28f, -146f), new Vector2(328f, 18f), 11, Color.white, TextAnchor.MiddleLeft, mono: false);
 
-        _questOptionalText = PlaceText("Quest_OptionalObjective", _vitalsRigRt, "◆ MISI OPSIONAL: Bicara ke NPC Bounty di Safe Zone",
+        _questOptionalText = PlaceText("Quest_OptionalObjective", _vitalsRigRt, "Bonus: Bicara ke NPC Bounty di Safe Zone",
             new Vector2(28f, -163f), new Vector2(328f, 15f), 9, new Color32(148, 196, 235, 235), TextAnchor.MiddleLeft, mono: true);
     }
 
@@ -757,12 +757,12 @@ public class GameplayHUD : MonoBehaviour
     {
         var statusRt = CreateAnchoredBox("HUD_BottomRight_ZoneStatus", root,
             new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-24f, 40f), new Vector2(360f, 22f));
-        _zoneStatusText = PlaceText("ZoneStatusText", statusRt, "SAFE ZONE // TTL STABIL",
+        _zoneStatusText = PlaceText("ZoneStatusText", statusRt, "Safe Zone • TTL Aman",
             Vector2.zero, new Vector2(360f, 22f), 12, TacticalHUDGraphics.ColNeonMint, TextAnchor.MiddleRight, mono: true);
 
         var hintRt = CreateAnchoredBox("HUD_BottomRight_SystemHint", root,
             new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-24f, 18f), new Vector2(340f, 20f));
-        PlaceText("SystemHintText", hintRt, "[F1] TUTORIAL   [TAB] HUB   [ESC] PAUSE",
+        PlaceText("SystemHintText", hintRt, "[F1] Latihan   [TAB] Hub   [ESC] Pause",
             Vector2.zero, new Vector2(340f, 20f), 11, new Color(0.58f, 0.64f, 0.72f, 0.78f), TextAnchor.MiddleRight, mono: true);
 
         var pauseRt = CreateAnchoredBox("HUD_CenterPauseLabel", root,
@@ -812,15 +812,15 @@ public class GameplayHUD : MonoBehaviour
             if (inSafe)
             {
                 _zoneStatusText.text = hasPkg
-                    ? "[SAFE ZONE // TTL AMAN]  PAKET SIAP -> KELUAR KE KANAN"
-                    : "[SAFE ZONE // TTL AMAN]  WAJIB: AMBIL PAKET [E] / UPGRADE SHOP";
+                    ? "Safe Zone • TTL Aman  •  Paket siap"
+                    : "Safe Zone • TTL Aman  •  Ambil paket [E]";
                 _zoneStatusText.color = TacticalHUDGraphics.ColNeonMint;
             }
             else
             {
                 _zoneStatusText.text = hasPkg
-                    ? "[ZONA AKTIF // TTL MENYUSUT]  ANTAR PAKET KE PENERIMA / SERVER B >>"
-                    : "[ZONA AKTIF // TTL MENYUSUT]  WAJIB: AMBIL PAKET DI NPC KURIR!";
+                    ? "Zona Luar • TTL Berjalan  •  Antar ke Server B"
+                    : "Zona Luar • TTL Berjalan  •  Belum bawa paket";
                 _zoneStatusText.color = _health.ttlCurrent <= _health.ttlMax * 0.35f
                     ? TacticalHUDGraphics.ColAmber
                     : TacticalHUDGraphics.ColElectricCyan;
@@ -834,7 +834,7 @@ public class GameplayHUD : MonoBehaviour
 
         if (_pauseBannerText != null)
         {
-            _pauseBannerText.text = (gm != null && gm.state == GameManager.GameState.Paused) ? "// PAUSED //" : "";
+            _pauseBannerText.text = (gm != null && gm.state == GameManager.GameState.Paused) ? "PAUSED" : "";
         }
     }
 
@@ -1031,17 +1031,17 @@ public class GameplayHUD : MonoBehaviour
 
             if (pkgState >= PackageState.Delivered)
             {
-                _questHeaderText.text = "MISI WAJIB [SELESAI]  //  PORTAL SERVER B TERBUKA";
+                _questHeaderText.text = "MISI UTAMA • SELESAI";
                 _questHeaderText.color = TacticalHUDGraphics.ColNeonMint;
-                _questPrimaryText.text = "✔ PAKET TERKIRIM — MASUK PORTAL SERVER B!";
+                _questPrimaryText.text = "Paket terkirim — Masuk Portal Server B";
                 _questPrimaryText.color = TacticalHUDGraphics.ColNeonMint;
                 if (_questLeftBarImg != null) _questLeftBarImg.color = TacticalHUDGraphics.ColNeonMint;
             }
             else if (pkgState == PackageState.Active)
             {
-                _questHeaderText.text = "MISI WAJIB [2/2]  //  IKUTI PANAH KECIL KE PENERIMA";
+                _questHeaderText.text = "MISI UTAMA • 2/2";
                 _questHeaderText.color = TacticalHUDGraphics.ColElectricCyan;
-                _questPrimaryText.text = "► SERAHKAN PAKET KE NPC PENERIMA [E] >>";
+                _questPrimaryText.text = "Antar paket ke Penerima [E]";
                 _questPrimaryText.color = Color.white;
                 if (_questLeftBarImg != null) _questLeftBarImg.color = TacticalHUDGraphics.ColElectricCyan;
             }
@@ -1049,9 +1049,9 @@ public class GameplayHUD : MonoBehaviour
             {
                 float pulse = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 6f);
                 Color warnCol = Color.Lerp(TacticalHUDGraphics.ColElectricCyan, TacticalHUDGraphics.ColGold, pulse);
-                _questHeaderText.text = "MISI WAJIB [1/2]  //  IKUTI PANAH KE NPC PAKET";
+                _questHeaderText.text = "MISI UTAMA • 1/2";
                 _questHeaderText.color = warnCol;
-                _questPrimaryText.text = "► AMBIL PAKET DATA DI NPC KURIR [E]";
+                _questPrimaryText.text = "Ambil paket di NPC Kurir [E]";
                 _questPrimaryText.color = Color.white;
                 if (_questLeftBarImg != null) _questLeftBarImg.color = warnCol;
             }
@@ -1060,23 +1060,23 @@ public class GameplayHUD : MonoBehaviour
             {
                 if (opt.Claimed)
                 {
-                    _questOptionalText.text = $"✔ BOUNTY SELESAI: {opt.ProgressLabel}";
+                    _questOptionalText.text = $"Bonus selesai: {opt.ProgressLabel}";
                     _questOptionalText.color = TacticalHUDGraphics.ColNeonMint;
                 }
                 else if (opt.CanClaim)
                 {
-                    _questOptionalText.text = $"★ BOUNTY SIAP KLAIM [+{opt.BonusBits} DB]: {opt.Label}";
+                    _questOptionalText.text = $"Klaim bonus (+{opt.BonusBits} DB): {opt.Label}";
                     _questOptionalText.color = TacticalHUDGraphics.ColGold;
                 }
                 else
                 {
-                    _questOptionalText.text = $"◆ MISI OPSIONAL: {opt.ProgressLabel} [+{opt.BonusBits} DB]";
+                    _questOptionalText.text = $"Bonus: {opt.ProgressLabel} (+{opt.BonusBits} DB)";
                     _questOptionalText.color = new Color32(148, 210, 250, 245);
                 }
             }
             else
             {
-                _questOptionalText.text = "◆ MISI OPSIONAL: Bicara ke NPC Bounty di Safe Zone";
+                _questOptionalText.text = "Bonus: Bicara ke NPC Bounty di Safe Zone";
                 _questOptionalText.color = new Color32(148, 178, 212, 220);
             }
         }

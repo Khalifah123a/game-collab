@@ -24,6 +24,8 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
     private bool returning;
     private float lostSight;
     private float _flashTimer;
+    private Vector3 _baseScale = Vector3.one;
+    private Vector2 _squash = Vector2.one;
     private SpriteRenderer _slashTelegraph;
     private static Sprite _telegraphSprite;
 
@@ -65,6 +67,7 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
     private void Awake()
     {
         home = transform.position;
+        _baseScale = transform.localScale;
         body = GetComponent<Rigidbody2D>();
         body.bodyType = RigidbodyType2D.Kinematic;
         body.gravityScale = 0;
@@ -325,18 +328,34 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
             {
                 sprite.color = Color.white;
             }
+            else if (currentState == State.Windup)
+            {
+                // Subtle warm telegraph coil instead of garish solid yellow tint
+                sprite.color = Color.Lerp(baseColor, new Color(1f, 0.85f, 0.55f, 1f), 0.55f);
+            }
+            else if (currentState == State.Attack)
+            {
+                sprite.color = Color.Lerp(baseColor, new Color(1f, 0.45f, 0.40f, 1f), 0.55f);
+            }
             else
             {
-                sprite.color = currentState == State.Windup ? Color.yellow : currentState == State.Attack ? Color.red : baseColor;
+                sprite.color = baseColor;
             }
         }
+
+        Vector2 targetSquash = currentState == State.Windup
+            ? new Vector2(0.86f, 1.16f)
+            : (currentState == State.Attack ? new Vector2(1.20f, 0.86f) : Vector2.one);
+        _squash = Vector2.Lerp(_squash, targetSquash, 16f * Time.fixedDeltaTime);
+        transform.localScale = new Vector3(_baseScale.x * _squash.x, _baseScale.y * _squash.y, _baseScale.z);
     }
 
     public void TakeHit(int damage)
     {
         if (damage <= 0 || currentState == State.Dead) return;
         hitPoints = Mathf.Max(0, hitPoints - damage);
-        _flashTimer = 0.09f;
+        _flashTimer = 0.085f;
+        _squash = new Vector2(1.24f, 0.78f);
         if (sprite) sprite.color = Color.white;
 
         float knockbackDir = 1f;
@@ -344,7 +363,7 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
         else if (PlayerHealth.Instance != null) knockbackDir = Mathf.Sign(transform.position.x - PlayerHealth.Instance.transform.position.x);
         if (knockbackDir == 0f) knockbackDir = -direction;
 
-        body.linearVelocity = new Vector2(knockbackDir * 4.2f, 1.8f);
+        body.linearVelocity = new Vector2(knockbackDir * 4.5f, 1.8f);
         warning.gameObject.SetActive(false);
         if (_slashTelegraph != null) _slashTelegraph.gameObject.SetActive(false);
 
@@ -354,13 +373,13 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
             if (GameManager.Instance != null)
                 OptionalQuestService.ReportKill(GameManager.Instance.currentWorldIndex, "enemy:patrol", gameObject.GetHashCode().ToString());
             foreach (var collider in GetComponents<Collider2D>()) collider.enabled = false;
-            JuiceManager.Hitstop(0.045f);
-            JuiceManager.SpawnDataDissolve(transform.position, 12, new Color(1f, 0.35f, 0.2f, 1f));
+            JuiceManager.Hitstop(0.05f);
+            JuiceManager.SpawnDataDissolve(transform.position, 10, new Color(1f, 0.42f, 0.30f, 1f));
             AudioManager.PlayEnemyDissolve();
             if (sprite) { sprite.color = new Color(1, 1, 1, 0.4f); transform.localScale *= 0.6f; }
             Destroy(gameObject, 0.15f);
         }
-        else { currentState = State.Stunned; timer = 0.2f; }
+        else { currentState = State.Stunned; timer = 0.22f; }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

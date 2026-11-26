@@ -113,7 +113,7 @@ public class PacketCourierLoadingScreen : MonoBehaviour
         // 2. Top Header & Title
         _headerText = CreateText(transform, "Header", new Vector2(0.1f, 0.88f), new Vector2(0.9f, 0.96f), 26, new Color(0.2f, 0.95f, 1f, 1f));
         _headerText.fontStyle = FontStyle.Bold;
-        _headerText.text = "< CYBERPACKET ROUTING PIPELINE // PROTOCOL TCP/IP v4.2 >\nPACKET TRANSFER IN PROGRESS...";
+        _headerText.text = "MEMUAT STAGE...\nMengirim paket ke server tujuan";
 
         // 3. Server Racks (Origin & Destination)
         var serverSprite = Resources.Load<Sprite>("GeneratedArt/server_rack");
@@ -216,39 +216,41 @@ public class PacketCourierLoadingScreen : MonoBehaviour
             string worldTitle = WorldRules.Title(targetWorld - 1).ToUpperInvariant();
             if (_headerText != null)
             {
-                _headerText.text = $"< SECTOR WARP PIPELINE // QUANTUM ROUTE v4.2 >\nWARPING TO SECTOR: WORLD {targetWorld} - {worldTitle} // STAGE {targetSegment}";
+                _headerText.text = TutorialWorldBuilder.IsTutorialWorldActive
+                    ? "WORLD 00 — TUTORIAL\nMenyiapkan arena latihan..."
+                    : $"WORLD {targetWorld} — {worldTitle}\nMenuju Stage {targetSegment}...";
             }
             _serverDestText.text = string.IsNullOrEmpty(destName)
-                ? $"[TARGET SECTOR : {worldTitle}]\nHOST: 10.0.{targetWorld}.{targetSegment}\nSTATUS: CONNECTED [DATA SYNC]"
+                ? $"SERVER B: {worldTitle}\n10.0.{targetWorld}.{targetSegment}\nSiap menerima paket"
                 : destName;
         }
         else if (sceneName == "Hub")
         {
             if (_headerText != null)
             {
-                _headerText.text = "< SECTOR WARP PIPELINE // QUANTUM ROUTE v4.2 >\nMISSION COMPLETE // RETURNING TO RELAY HUB";
+                _headerText.text = "WORLD SELESAI\nKembali ke Hub...";
             }
             _serverDestText.text = string.IsNullOrEmpty(destName)
-                ? "[CENTRAL RELAY HUB]\nHOST: 127.0.0.1 [STATION]\nSTATUS: SECURE BUFFER"
+                ? "HUB KURIR\n127.0.0.1\nKoneksi aman"
                 : destName;
         }
         else if (sceneName == "Menu")
         {
             if (_headerText != null)
             {
-                _headerText.text = "< SECTOR WARP PIPELINE // QUANTUM ROUTE v4.2 >\nDISCONNECTING LINK // MAIN TERMINAL";
+                _headerText.text = "MENU UTAMA\nKembali ke layar awal...";
             }
             _serverDestText.text = string.IsNullOrEmpty(destName)
-                ? "[DISPATCH TERMINAL]\nHOST: 0.0.0.0 [IDLE]\nSTATUS: OFFLINE"
+                ? "MENU UTAMA\nSiap berangkat"
                 : destName;
         }
 
         _serverOriginText.text = string.IsNullOrEmpty(originName)
-            ? $"[ORIGIN SERVER : ALPHA]\nHOST: 192.168.{curWorld}.{curSegment}\nSEGMENT: W{curWorld}-S{curSegment} [SENDING]"
+            ? $"SERVER A\n192.168.{curWorld}.{curSegment}\nWorld {curWorld} Stage {curSegment}"
             : originName;
 
         _consoleLines.Clear();
-        AddLog($"[TCP 3-WAY HANDSHAKE] Opening quantum socket to destination...");
+        AddLog("[TCP 3-WAY HANDSHAKE] Menghubungkan ke server tujuan...");
         if (isWorldScene)
         {
             AddLog($"[ROUTE TRACE] Target Sector: World {targetWorld} ({WorldRules.Title(targetWorld - 1)}), Stage {targetSegment} OK.");

@@ -91,6 +91,8 @@ public class PlayerController : MonoBehaviour
     private float _footstepTimer;
     private float _wallSparksTimer;
     private float _lastJumpTime = -10f;
+    private float _fallSpeedBeforeLand;
+    private bool _jumpHeldOnLaunch;
     private Platform_Moving _currentMovingPlatform;
     private readonly RaycastHit2D[] _hits = new RaycastHit2D[16];
 
@@ -227,8 +229,21 @@ public class PlayerController : MonoBehaviour
 
         if (!_wasGrounded && isGrounded && _rb != null && relVelY <= 0.05f)
         {
-            JuiceManager.SpawnDustPuff(transform.position);
-            AudioManager.PlayLand();
+            if (_fallSpeedBeforeLand < -3.0f)
+            {
+                JuiceManager.SpawnDustPuff(transform.position);
+                AudioManager.PlayLand();
+            }
+            if (_fallSpeedBeforeLand < -10.5f)
+            {
+                JuiceManager.PunchCamera(Vector2.down, 0.10f);
+            }
+            _fallSpeedBeforeLand = 0f;
+            _jumpHeldOnLaunch = false;
+        }
+        else if (!isGrounded && _rb != null && _rb.linearVelocity.y < _fallSpeedBeforeLand)
+        {
+            _fallSpeedBeforeLand = _rb.linearVelocity.y;
         }
         _wasGrounded = isGrounded;
 
@@ -324,6 +339,8 @@ public class PlayerController : MonoBehaviour
     private void DoJump(Vector2 dir, float force)
     {
         _lastJumpTime = Time.time;
+        _fallSpeedBeforeLand = 0f;
+        _jumpHeldOnLaunch = _input != null && _input.enabled && _input.jumpHeld;
         isGrounded = false;
         if (_currentMovingPlatform != null)
         {
@@ -503,7 +520,32 @@ public class PlayerController : MonoBehaviour
     {
         if (!isGrounded)
         {
-            float gravMult = _moveInput.y < 0 ? 2.5f : 1f;
+            float vy = _rb.linearVelocity.y;
+            float gravMult;
+            if (_moveInput.y < 0)
+            {
+                gravMult = 2.4f;
+            }
+            else if (_jumpHeldOnLaunch && vy > 3.5f && _input != null && _input.enabled && !_input.jumpHeld)
+            {
+                // Variable jump height: releasing jump early gives a responsive short hop
+                gravMult = 1.75f;
+            }
+            else if (Mathf.Abs(vy) < 1.8f)
+            {
+                // Subtle apex hang-time for precise platforming landings
+                gravMult = 0.80f;
+            }
+            else if (vy < -0.5f)
+            {
+                // Crisp downward fall arc (Celeste / Hollow Knight feel)
+                gravMult = 1.18f;
+            }
+            else
+            {
+                gravMult = 1f;
+            }
+
             _rb.linearVelocity -= new Vector2(0, gravity * gravMult * Time.fixedDeltaTime);
             _rb.linearVelocity = new Vector2(_rb.linearVelocity.x, Mathf.Max(-maxFallSpeed, _rb.linearVelocity.y));
         }

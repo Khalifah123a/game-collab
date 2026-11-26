@@ -223,16 +223,28 @@ public class PlayerCombat : MonoBehaviour
 
                     if (!wasDead && isDeadNow)
                     {
-                        JuiceManager.Hitstop(0.10f);
-                        JuiceManager.Shake(0.35f);
+                        JuiceManager.Hitstop(0.075f);
+                        JuiceManager.Shake(0.26f);
+                        JuiceManager.PunchCamera(new Vector2(facing, 0.15f), 0.18f);
                     }
                     else
                     {
-                        JuiceManager.Hitstop(0.06f);
-                        JuiceManager.Shake(0.18f);
+                        JuiceManager.Hitstop(0.045f);
+                        JuiceManager.Shake(0.14f);
+                        JuiceManager.PunchCamera(new Vector2(facing, 0.08f), 0.11f);
                     }
 
-                    JuiceManager.SpawnImpactSparks(hitPos, new Color(0.2f, 0.95f, 1f, 1f), facing);
+                    // Tactile melee recoil so blade impacts feel solid
+                    if (player != null)
+                    {
+                        var prb = player.GetComponent<Rigidbody2D>();
+                        if (prb != null)
+                        {
+                            prb.linearVelocity = new Vector2(-facing * 1.15f, prb.linearVelocity.y);
+                        }
+                    }
+
+                    JuiceManager.SpawnImpactSparks(hitPos, new Color(0.75f, 0.96f, 1f, 1f), facing);
                     AudioManager.PlayHitImpact();
                 }
                 catch (System.Exception ex)

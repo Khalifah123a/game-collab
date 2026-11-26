@@ -133,11 +133,11 @@ public class PauseMenuUI : MonoBehaviour
             _canvasGroup = cardGo.GetComponent<CanvasGroup>();
 
             // Header
-            var header = CreateLabel(cardGo.transform, "< SYSTEM PAUSED // TERMINAL >", new Vector2(0.05f, 0.88f), new Vector2(0.95f, 0.96f), 24, new Color(0.2f, 0.95f, 1f, 1f));
+            var header = CreateLabel(cardGo.transform, "GAME DIJEDA", new Vector2(0.05f, 0.88f), new Vector2(0.95f, 0.96f), 24, new Color(0.2f, 0.95f, 1f, 1f));
             header.fontStyle = FontStyle.Bold;
 
             // Section 1: Settings
-            CreateLabel(cardGo.transform, "[ SYSTEM SETTINGS ]", new Vector2(0.08f, 0.78f), new Vector2(0.92f, 0.84f), 16, new Color(0f, 1f, 0.8f, 0.9f));
+            CreateLabel(cardGo.transform, "PENGATURAN AUDIO & KONTROL", new Vector2(0.08f, 0.78f), new Vector2(0.92f, 0.84f), 16, new Color(0f, 1f, 0.8f, 0.9f));
 
             // Volume controls
             BuildVolumeRow(cardGo.transform, "Master Volume", 0.70f, ref _masterVolText,
@@ -166,7 +166,7 @@ public class PauseMenuUI : MonoBehaviour
             UpdateRumbleText();
 
             // Section 2: Overclock Hardware Status
-            CreateLabel(cardGo.transform, "[ HARDWARE MODS INSTALLED ]", new Vector2(0.08f, 0.35f), new Vector2(0.92f, 0.40f), 16, new Color(1f, 0.85f, 0.2f, 0.9f));
+            CreateLabel(cardGo.transform, "CHIP SKILL TERPASANG", new Vector2(0.08f, 0.35f), new Vector2(0.92f, 0.40f), 16, new Color(1f, 0.85f, 0.2f, 0.9f));
             _overclockSummaryText = CreateLabel(cardGo.transform, "Loading mods...", new Vector2(0.08f, 0.24f), new Vector2(0.92f, 0.34f), 14, new Color(0.75f, 0.9f, 1f, 0.95f));
             _overclockSummaryText.alignment = TextAnchor.MiddleCenter;
             RefreshOverclockSummary();

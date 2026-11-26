@@ -78,7 +78,7 @@ public class HubUI : MonoBehaviour
         logoImg.sprite = PixelUIKit.GetParcelLogo();
         logoImg.preserveAspect = true;
 
-        PixelUIKit.CreatePixelLabel(card.transform, "Title", "RUN COMPLETE // TRANSMISSION VERIFIED", new Vector2(0.06f, 0.60f), new Vector2(0.94f, 0.72f), 28, PixelUIKit.Mint, TextAnchor.MiddleCenter, false);
+        PixelUIKit.CreatePixelLabel(card.transform, "Title", "WORLD SELESAI!", new Vector2(0.06f, 0.60f), new Vector2(0.94f, 0.72f), 28, PixelUIKit.Mint, TextAnchor.MiddleCenter, false);
         PixelUIKit.CreatePixelLabel(card.transform, "Subtitle", HubSubtitle(), new Vector2(0.08f, 0.48f), new Vector2(0.92f, 0.58f), 16, PixelUIKit.TextWhite, TextAnchor.MiddleCenter, true);
 
         var gm = Application.isPlaying ? GameManager.Ensure() : GameManager.Instance;
@@ -88,8 +88,8 @@ public class HubUI : MonoBehaviour
             PixelUIKit.CreateTactileButton(
                 card.transform,
                 "play",
-                "NEXT SECTOR: " + WorldRules.Title(next).ToUpperInvariant(),
-                $"DEPLOY TO WORLD {next + 1} // {WorldRules.Segments(next)} SEGMENTS | TTL {WorldRules.TTL(next):0}s",
+                $"LANJUT: WORLD {next + 1} — " + WorldRules.Title(next).ToUpperInvariant(),
+                $"{WorldRules.Segments(next)} Stage  •  TTL {WorldRules.TTL(next):0} Detik",
                 "ENTER",
                 new Vector2(0.14f, 0.27f),
                 new Vector2(0.86f, 0.42f),
@@ -101,8 +101,8 @@ public class HubUI : MonoBehaviour
             PixelUIKit.CreateTactileButton(
                 card.transform,
                 "skull",
-                "CHALLENGE: BOSS RUSH GAUNTLET",
-                "FIGHT THE CENSOR -> SOLARIS -> ROOTKIT CORE BACK-TO-BACK",
+                "BOSS RUSH",
+                "Lawan 3 Boss Ground berturut-turut",
                 "RUSH",
                 new Vector2(0.14f, 0.27f),
                 new Vector2(0.86f, 0.42f),
@@ -113,8 +113,8 @@ public class HubUI : MonoBehaviour
         PixelUIKit.CreateTactileButton(
             card.transform,
             "home",
-            "BACK TO DISPATCH MENU",
-            "RETURN TO MAIN RELAY TERMINAL",
+            "MENU UTAMA",
+            "Kembali ke layar awal",
             "ESC",
             new Vector2(0.14f, 0.09f),
             new Vector2(0.86f, 0.23f),

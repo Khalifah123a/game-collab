@@ -53,12 +53,12 @@ public class ShopUI : MonoBehaviour
     };
 
     private static readonly string[] ShopCategories = {
-        "MOBILITY TUNING",
-        "OFFENSIVE TUNING",
-        "CHASSIS HARDWARE",
-        "OFFENSIVE TUNING",
-        "OFFENSIVE TUNING",
-        "MOBILITY TUNING"
+        "GERAK",
+        "SERANGAN",
+        "SENJATA",
+        "SERANGAN",
+        "SERANGAN",
+        "GERAK"
     };
 
     private static readonly Color[] ShopColors = {
@@ -232,11 +232,11 @@ public class ShopUI : MonoBehaviour
         int runSpd = _wallet.GetLevel(5);
         int cling = _wallet.GetLevel(0);
 
-        if (_telemTierText != null) _telemTierText.text = $"WEAPON TIER:     MK-{(wpnLv + 1)} {(wpnLv > 0 ? "OVERCLOCKED" : "BASE")}";
-        if (_telemDmgText != null) _telemDmgText.text = $"MELEE DAMAGE:    +{(wpnDmg + 1)} DMG";
-        if (_telemSpdText != null) _telemSpdText.text = $"ATTACK SPEED:    {(100 + atkSpd * 10)}% RATE";
-        if (_telemRunText != null) _telemRunText.text = $"RUN SPEED:       {(6.00f + runSpd * 0.25f):F2} m/s";
-        if (_telemClingText != null) _telemClingText.text = $"WALL CLING:      {(0.50f + cling * 0.15f):F2}s HOLD";
+        if (_telemTierText != null) _telemTierText.text = $"SENJATA:     MK-{(wpnLv + 1)}";
+        if (_telemDmgText != null) _telemDmgText.text = $"DAMAGE:      +{(wpnDmg + 1)} DMG";
+        if (_telemSpdText != null) _telemSpdText.text = $"SERANG:      {(100 + atkSpd * 10)}%";
+        if (_telemRunText != null) _telemRunText.text = $"LARI:        {(6.00f + runSpd * 0.25f):F2} m/s";
+        if (_telemClingText != null) _telemClingText.text = $"PANJAT:      {(0.50f + cling * 0.15f):F2} dtk";
 
         for (int i = 0; i < ShopCatalog.Entries.Length && i < _buttons.Count; i++)
         {
@@ -505,7 +505,7 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             venCard.transform,
             "VenTitle",
-            "UNIT-74 MECHANIC",
+            "MEKANIK U-74",
             new Vector2(0.28f, 0.55f),
             new Vector2(0.95f, 0.90f),
             12,
@@ -517,7 +517,7 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             venCard.transform,
             "VenSub",
-            "SAFE ZONE VENDOR // ONLINE",
+            "TOKO SAFE ZONE",
             new Vector2(0.28f, 0.28f),
             new Vector2(0.95f, 0.55f),
             8,
@@ -529,7 +529,7 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             venCard.transform,
             "VenId",
-            "ID: #TK-8842-SZ",
+            "Siap pasang upgrade",
             new Vector2(0.28f, 0.05f),
             new Vector2(0.95f, 0.28f),
             8,
@@ -552,7 +552,7 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             transCard.transform,
             "TransLabel",
-            "VENDOR TRANSMISSION",
+            "CATATAN MEKANIK",
             new Vector2(0.06f, 0.78f),
             new Vector2(0.94f, 0.95f),
             8,
@@ -564,7 +564,7 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             transCard.transform,
             "TransBody",
-            "Selamat datang, Kurir. Pasang modul tuning ini ke sasis Anda untuk memperkuat serangan dan manuver platforming sebelum masuk ke sektor bahaya berikutnya.",
+            "Pilih upgrade untuk memperkuat senjata dan gerakmu sebelum keluar Safe Zone.",
             new Vector2(0.06f, 0.05f),
             new Vector2(0.94f, 0.75f),
             8,
@@ -587,7 +587,7 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             telemCard.transform,
             "TelemHeader",
-            "COURIER CHASSIS TELEMETRY",
+            "STATUS KURIR",
             new Vector2(0.06f, 0.85f),
             new Vector2(0.94f, 0.98f),
             8,
@@ -670,7 +670,7 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             balCard.transform,
             "BalLabel",
-            "AVAILABLE CREDITS",
+            "SALDO DATA BITS",
             new Vector2(0.08f, 0.58f),
             new Vector2(0.92f, 0.90f),
             9,
@@ -705,9 +705,9 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             mainGo.transform,
             "ContentHeader",
-            "HARDWARE TECH SHOP",
+            "TOKO UPGRADE",
             new Vector2(0.03f, 0.915f),
-            new Vector2(0.55f, 0.972f),
+            new Vector2(0.54f, 0.972f),
             18,
             PixelUIKit.Mint,
             TextAnchor.MiddleLeft,
@@ -717,9 +717,9 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             mainGo.transform,
             "ContentSub",
-            "UPGRADE SENJATA & MOBILITAS // KLIK MODUL ATAU TEKAN [1-6]",
+            "Tingkatkan senjata & gerak  •  Klik atau tekan [1-6]",
             new Vector2(0.03f, 0.873f),
-            new Vector2(0.55f, 0.913f),
+            new Vector2(0.54f, 0.913f),
             10,
             PixelUIKit.TextMuted,
             TextAnchor.MiddleLeft,
@@ -730,22 +730,22 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreateTactileButton(
             mainGo.transform,
             "bolt",
-            "OVERCLOCK",
+            "CHIP SKILL",
             "",
             "TAB",
-            new Vector2(0.57f, 0.885f),
-            new Vector2(0.825f, 0.965f),
+            new Vector2(0.555f, 0.885f),
+            new Vector2(0.80f, 0.965f),
             PixelUIKit.ButtonTheme.PrimaryCyan,
             SwitchToOverclockTerminal);
 
-        // Close Button
+        // Close Button (wide enough so ESC stays on one crisp line)
         PixelUIKit.CreateTactileButton(
             mainGo.transform,
             "back",
             "TUTUP",
             "",
             "ESC",
-            new Vector2(0.84f, 0.885f),
+            new Vector2(0.815f, 0.885f),
             new Vector2(0.97f, 0.965f),
             PixelUIKit.ButtonTheme.SecondarySlate,
             Close);
@@ -964,7 +964,7 @@ public class ShopUI : MonoBehaviour
         PixelUIKit.CreatePixelLabel(
             priceBadgeGo.transform,
             "ActionLabel",
-            "BELI / UPGRADE",
+            "BELI",
             new Vector2(0f, 0.10f),
             new Vector2(1f, 0.35f),
             8,
@@ -1006,7 +1006,7 @@ public class ShopUI : MonoBehaviour
         _footerHint = PixelUIKit.CreatePixelLabel(
             footerGo.transform,
             "FooterHint",
-            "[1-6] BELI UPGRADE   |   [KLIK] BELI MODUL   |   [TAB] TERMINAL OVERCLOCK   |   [ESC / 0] KEMBALI",
+            "[1-6] Beli Upgrade  •  [TAB] Chip Skill  •  [ESC] Tutup",
             Vector2.zero,
             Vector2.one,
             10,
