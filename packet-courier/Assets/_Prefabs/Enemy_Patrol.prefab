@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 5734075367677207335}
   - component: {fileID: 280253554597970168}
   - component: {fileID: 5990681540293362374}
+  - component: {fileID: 7100000000000000001}
+  - component: {fileID: 7100000000000000002}
   m_Layer: 0
   m_Name: Enemy_Patrol
   m_TagString: Untagged
@@ -131,6 +133,9 @@ MonoBehaviour:
   damageCooldown: 1
   damageTriggerRadius: 1.5
   stationary: 0
+  customSprite: {fileID: 0}
+  customProfile: {fileID: 11400000, guid: a1010000000040008000000000000001, type: 2}
+  customSpriteAnimator: {fileID: 7100000000000000001}
   currentState: 0
 --- !u!212 &5990681540293362374
 SpriteRenderer:
@@ -192,3 +197,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!114 &7100000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8136976157080159188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51d4e85c4fe593145b1e6d5909c7231d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ModularSpriteAnimator
+  profile: {fileID: 11400000, guid: a1010000000040008000000000000001, type: 2}
+  defaultSprite: {fileID: 0}
+  targetRenderer: {fileID: 5990681540293362374}
+  defaultState: Idle
+  playOnStart: 1
+  invertFacing: 0
+  useExternalFacing: 0
+  visualScaleMultiplier: 1
+  visualOffset: {x: 0, y: 0}
+  playbackSpeed: 1
+  applyStateTint: 0
+  states: []
+--- !u!114 &7100000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8136976157080159188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 588a5adeb21a151418f129e2b57f7e7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAnimationBridge
+  animator: {fileID: 7100000000000000001}
+  enemyController: {fileID: 280253554597970168}
+  idleState: Idle
+  patrolState: Walk
+  chaseState: Chase
+  windupState: Windup
+  attackState: Attack
+  recoveryState: Idle
+  hurtState: Hurt
+  deathState: Death
+  autoFacing: 1

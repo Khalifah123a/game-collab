@@ -17,6 +17,11 @@ public class Enemy_FirewallTurret : MonoBehaviour, IEnemyDamageable
     public float damageAmount = 15f;
     public int facingDirection = -1; // -1 for Left, 1 for Right
 
+    [Header("Custom Sprite & Animasi (Opsional — Drag Asset Sendiri)")]
+    public Sprite customSprite;
+    public SpriteAnimationProfile customProfile;
+    public ModularSpriteAnimator customSpriteAnimator;
+
     [Header("State")]
     public bool isTargeting;
     public bool isDead;
@@ -64,6 +69,47 @@ public class Enemy_FirewallTurret : MonoBehaviour, IEnemyDamageable
     {
         var pc = FindAnyObjectByType<PlayerController>();
         if (pc != null) _player = pc.transform;
+        ApplyCustomArtSetup();
+    }
+
+    private void ApplyCustomArtSetup()
+    {
+        if (customSpriteAnimator == null) customSpriteAnimator = GetComponent<ModularSpriteAnimator>();
+
+        SpriteAnimationProfile resolved = (customProfile != null && customProfile.HasAnyCustomArt())
+            ? customProfile
+            : Resources.Load<SpriteAnimationProfile>("CustomAnimations/Enemy_FirewallTurret");
+        if (resolved != null && !resolved.HasAnyCustomArt()) resolved = null;
+
+        bool inlineHasArt = customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt();
+        if (resolved != null)
+        {
+            if (customSpriteAnimator == null) customSpriteAnimator = gameObject.AddComponent<ModularSpriteAnimator>();
+            customSpriteAnimator.targetRenderer = _sprite;
+            customSpriteAnimator.ApplyProfile(resolved, overwriteExisting: !inlineHasArt);
+        }
+
+        if (customSpriteAnimator != null && _sprite != null)
+        {
+            customSpriteAnimator.targetRenderer = _sprite;
+            customSpriteAnimator.EnsureRenderer();
+            if (customSprite != null && customSpriteAnimator.defaultSprite == null)
+                customSpriteAnimator.defaultSprite = customSprite;
+            if (customSpriteAnimator.HasAnyCustomArt())
+            {
+                _sprite.color = Color.white;
+                if (!customSpriteAnimator.PlaySmart("Idle", 1, "Walk"))
+                {
+                    Sprite fb = customSpriteAnimator.GetFallbackSprite();
+                    if (fb != null) _sprite.sprite = fb;
+                }
+            }
+        }
+        else if (customSprite != null && _sprite != null)
+        {
+            _sprite.sprite = customSprite;
+            _sprite.color = Color.white;
+        }
     }
 
     private void Update()
@@ -109,6 +155,8 @@ public class Enemy_FirewallTurret : MonoBehaviour, IEnemyDamageable
                     _laserSight.startColor = new Color(1f, 0.2f, 0.1f, 0.8f);
                     _laserSight.endColor = new Color(1f, 0.2f, 0.1f, 0.8f);
                     AudioManager.Play("sfx_shoot", 0.5f, 1.8f);
+                    if (customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt())
+                        customSpriteAnimator.PlaySmart("Windup", 1, "Attack", "Idle");
                 }
 
                 if (_timer >= windupTime)
@@ -117,12 +165,16 @@ public class Enemy_FirewallTurret : MonoBehaviour, IEnemyDamageable
                     _timer = -fireCooldown;
                     isTargeting = false;
                     _laserSight.enabled = false;
+                    if (customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt())
+                        customSpriteAnimator.PlaySmart("Attack", 1, "Idle");
                 }
                 return;
             }
         }
 
         // Lost sight
+        if (isTargeting && customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt())
+            customSpriteAnimator.PlaySmart("Idle", 1, "Walk");
         isTargeting = false;
         _laserSight.enabled = false;
         _timer = Mathf.Max(0f, _timer - Time.deltaTime);

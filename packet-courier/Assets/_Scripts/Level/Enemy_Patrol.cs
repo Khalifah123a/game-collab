@@ -9,6 +9,13 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
     public int hitPoints = 2;
     public float damageAmount = 15, damageCooldown = 0.8f, damageTriggerRadius = 1.5f;
     public bool stationary;
+    [Header("Custom Sprite & Animasi (Opsional — Drag Asset Sendiri)")]
+    [Tooltip("Opsional: Drag 1 sprite custom langsung ke sini.")]
+    public Sprite customSprite;
+    [Tooltip("Opsional: Drag SpriteAnimationProfile ke sini (otomatis memuat Resources/CustomAnimations/Enemy_Patrol jika ada isinya).")]
+    public SpriteAnimationProfile customProfile;
+    [Tooltip("Optional ModularSpriteAnimator component for custom friend sprites.")]
+    public ModularSpriteAnimator customSpriteAnimator;
     public enum State { Patrol, Chase, Windup, Attack, Recovery, Stunned, Dead }
     public State currentState;
     public Transform HitTransform => transform;
@@ -75,6 +82,12 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
         foreach (var collider in GetComponents<Collider2D>()) collider.isTrigger = true;
         sprite = GetComponent<SpriteRenderer>();
         if (sprite == null) sprite = gameObject.AddComponent<SpriteRenderer>();
+        if (customSpriteAnimator == null) customSpriteAnimator = GetComponent<ModularSpriteAnimator>();
+        if (customSpriteAnimator != null && sprite != null)
+        {
+            customSpriteAnimator.targetRenderer = sprite;
+            customSpriteAnimator.EnsureRenderer();
+        }
         if (sprite != null)
         {
             if (sprite.sprite == null || sprite.sprite.name.Contains("Box"))
@@ -160,8 +173,52 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
             sprite.color = baseColor;
         }
         if (transform.localScale.sqrMagnitude < 0.1f) transform.localScale = Vector3.one;
+        _baseScale = transform.localScale;
 
+        ApplyCustomArtSetup();
         SnapToGroundSurface();
+    }
+
+    private void ApplyCustomArtSetup()
+    {
+        if (customSpriteAnimator == null) customSpriteAnimator = GetComponent<ModularSpriteAnimator>();
+
+        SpriteAnimationProfile resolved = (customProfile != null && customProfile.HasAnyCustomArt())
+            ? customProfile
+            : Resources.Load<SpriteAnimationProfile>("CustomAnimations/Enemy_Patrol");
+        if (resolved != null && !resolved.HasAnyCustomArt()) resolved = null;
+
+        bool inlineHasArt = customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt();
+        if (resolved != null)
+        {
+            if (customSpriteAnimator == null) customSpriteAnimator = gameObject.AddComponent<ModularSpriteAnimator>();
+            customSpriteAnimator.targetRenderer = sprite;
+            customSpriteAnimator.ApplyProfile(resolved, overwriteExisting: !inlineHasArt);
+        }
+
+        if (customSpriteAnimator != null && sprite != null)
+        {
+            customSpriteAnimator.targetRenderer = sprite;
+            customSpriteAnimator.EnsureRenderer();
+            if (customSprite != null && customSpriteAnimator.defaultSprite == null)
+                customSpriteAnimator.defaultSprite = customSprite;
+
+            if (customSpriteAnimator.HasAnyCustomArt())
+            {
+                float mult = Mathf.Clamp(customSpriteAnimator.visualScaleMultiplier, 0.25f, 4f);
+                _baseScale = new Vector3(_baseScale.x * mult, _baseScale.y * mult, _baseScale.z);
+                transform.localScale = _baseScale;
+                if (!customSpriteAnimator.PlaySmart(stationary ? "Idle" : "Walk", 1, "Idle", "Walk"))
+                {
+                    Sprite fb = customSpriteAnimator.GetFallbackSprite();
+                    if (fb != null) sprite.sprite = fb;
+                }
+            }
+        }
+        else if (customSprite != null && sprite != null)
+        {
+            sprite.sprite = customSprite;
+        }
     }
 
     private void FixedUpdate()
@@ -323,7 +380,9 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
         }
         if (sprite)
         {
-            sprite.flipX = direction < 0;
+            bool flip = direction < 0;
+            if (customSpriteAnimator != null && customSpriteAnimator.invertFacing) flip = !flip;
+            sprite.flipX = flip;
             if (_flashTimer > 0f)
             {
                 sprite.color = Color.white;
@@ -341,6 +400,30 @@ public class Enemy_Patrol : MonoBehaviour, IEnemyDamageable
             {
                 sprite.color = baseColor;
             }
+        }
+
+        if (customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt())
+        {
+            string preferred = currentState == State.Dead ? "Death"
+                : currentState == State.Stunned ? "Hurt"
+                : currentState == State.Windup ? "Windup"
+                : currentState == State.Attack ? "Attack"
+                : currentState == State.Chase ? "Chase"
+                : currentState == State.Patrol ? (stationary ? "Idle" : "Walk")
+                : "Idle";
+
+            string fallback = currentState == State.Chase ? "Walk"
+                : currentState == State.Windup ? "Attack"
+                : "Idle";
+
+            string targetPlay = customSpriteAnimator.HasValidState(preferred) ? preferred
+                : (customSpriteAnimator.HasValidState(fallback) ? fallback : "Idle");
+
+            if (!customSpriteAnimator.IsPlayingState(targetPlay))
+            {
+                customSpriteAnimator.PlaySmart(preferred, 1, fallback, "Idle", "Walk");
+            }
+            customSpriteAnimator.SetFacing(direction);
         }
 
         Vector2 targetSquash = currentState == State.Windup

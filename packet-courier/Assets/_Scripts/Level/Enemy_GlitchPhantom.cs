@@ -25,6 +25,11 @@ public class Enemy_GlitchPhantom : MonoBehaviour, IEnemyDamageable
     public float ambushWindup = 0.45f;
     public float contactDamage = 18f;
 
+    [Header("Custom Sprite & Animasi (Opsional — Drag Asset Sendiri)")]
+    public Sprite customSprite;
+    public SpriteAnimationProfile customProfile;
+    public ModularSpriteAnimator customSpriteAnimator;
+
     [Header("State")]
     public PhantomState currentState = PhantomState.Pursuit;
     public bool isDesynced;
@@ -74,6 +79,47 @@ public class Enemy_GlitchPhantom : MonoBehaviour, IEnemyDamageable
     {
         var pc = FindAnyObjectByType<PlayerController>();
         if (pc != null) _player = pc.transform;
+        ApplyCustomArtSetup();
+    }
+
+    private void ApplyCustomArtSetup()
+    {
+        if (customSpriteAnimator == null) customSpriteAnimator = GetComponent<ModularSpriteAnimator>();
+
+        SpriteAnimationProfile resolved = (customProfile != null && customProfile.HasAnyCustomArt())
+            ? customProfile
+            : Resources.Load<SpriteAnimationProfile>("CustomAnimations/Enemy_GlitchPhantom");
+        if (resolved != null && !resolved.HasAnyCustomArt()) resolved = null;
+
+        bool inlineHasArt = customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt();
+        if (resolved != null)
+        {
+            if (customSpriteAnimator == null) customSpriteAnimator = gameObject.AddComponent<ModularSpriteAnimator>();
+            customSpriteAnimator.targetRenderer = _sprite;
+            customSpriteAnimator.ApplyProfile(resolved, overwriteExisting: !inlineHasArt);
+        }
+
+        if (customSpriteAnimator != null && _sprite != null)
+        {
+            customSpriteAnimator.targetRenderer = _sprite;
+            customSpriteAnimator.EnsureRenderer();
+            if (customSprite != null && customSpriteAnimator.defaultSprite == null)
+                customSpriteAnimator.defaultSprite = customSprite;
+            if (customSpriteAnimator.HasAnyCustomArt())
+            {
+                _sprite.color = Color.white;
+                if (!customSpriteAnimator.PlaySmart("Walk", 1, "Idle"))
+                {
+                    Sprite fb = customSpriteAnimator.GetFallbackSprite();
+                    if (fb != null) _sprite.sprite = fb;
+                }
+            }
+        }
+        else if (customSprite != null && _sprite != null)
+        {
+            _sprite.sprite = customSprite;
+            _sprite.color = Color.white;
+        }
     }
 
     private void Update()
@@ -93,6 +139,7 @@ public class Enemy_GlitchPhantom : MonoBehaviour, IEnemyDamageable
             return;
         }
 
+        bool hasCustomArt = customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt();
         Vector2 playerPos = _player.position;
         Vector2 myPos = transform.position;
         Vector2 toPlayer = playerPos - myPos;
@@ -101,7 +148,7 @@ public class Enemy_GlitchPhantom : MonoBehaviour, IEnemyDamageable
         {
             case PhantomState.Pursuit:
                 isDesynced = false;
-                _sprite.color = new Color(0.7f, 0.25f, 1f, 1f);
+                _sprite.color = hasCustomArt ? Color.white : new Color(0.7f, 0.25f, 1f, 1f);
 
                 _rb.linearVelocity = toPlayer.normalized * moveSpeed;
 
@@ -116,7 +163,7 @@ public class Enemy_GlitchPhantom : MonoBehaviour, IEnemyDamageable
                 isDesynced = true;
                 // Flicker scanline effect
                 float flicker = (Mathf.Sin(Time.time * 30f) * 0.5f + 0.5f) * 0.4f + 0.15f;
-                _sprite.color = new Color(0.5f, 0.8f, 1f, flicker);
+                _sprite.color = hasCustomArt ? new Color(0.8f, 0.9f, 1f, flicker) : new Color(0.5f, 0.8f, 1f, flicker);
 
                 // Move swiftly around player's flank
                 Vector2 flankPos = playerPos + new Vector2(toPlayer.x > 0 ? -2.2f : 2.2f, 1.2f);
@@ -132,7 +179,7 @@ public class Enemy_GlitchPhantom : MonoBehaviour, IEnemyDamageable
             case PhantomState.AmbushWindup:
                 isDesynced = false;
                 _rb.linearVelocity = Vector2.zero;
-                _sprite.color = new Color(1f, 0.1f, 0.3f, 1f); // Warning alert flash
+                _sprite.color = hasCustomArt ? new Color(1f, 0.72f, 0.72f, 1f) : new Color(1f, 0.1f, 0.3f, 1f);
                 transform.localScale = Vector3.one * (1f + Mathf.Sin(Time.time * 25f) * 0.15f);
 
                 _stateTimer -= Time.deltaTime;
@@ -154,7 +201,7 @@ public class Enemy_GlitchPhantom : MonoBehaviour, IEnemyDamageable
                 break;
 
             case PhantomState.Recovery:
-                _sprite.color = new Color(0.6f, 0.6f, 0.8f, 0.85f);
+                _sprite.color = hasCustomArt ? new Color(0.85f, 0.85f, 0.92f, 0.9f) : new Color(0.6f, 0.6f, 0.8f, 0.85f);
                 transform.localScale = Vector3.one;
                 _stateTimer -= Time.deltaTime;
                 if (_stateTimer <= 0f)
@@ -163,6 +210,22 @@ public class Enemy_GlitchPhantom : MonoBehaviour, IEnemyDamageable
                     _desyncCooldown = 3.2f;
                 }
                 break;
+        }
+
+        if (hasCustomArt)
+        {
+            string preferred = currentState == PhantomState.Desynced ? "Dash"
+                : currentState == PhantomState.AmbushWindup ? "Windup"
+                : currentState == PhantomState.LungeAttack ? "Attack"
+                : currentState == PhantomState.Recovery ? "Idle"
+                : "Chase";
+            string fallback = currentState == PhantomState.AmbushWindup ? "Attack" : "Walk";
+            string targetPlay = customSpriteAnimator.HasValidState(preferred) ? preferred
+                : (customSpriteAnimator.HasValidState(fallback) ? fallback : "Idle");
+            if (!customSpriteAnimator.IsPlayingState(targetPlay))
+                customSpriteAnimator.PlaySmart(preferred, 1, fallback, "Idle", "Walk");
+            if (Mathf.Abs(_rb.linearVelocity.x) > 0.05f)
+                customSpriteAnimator.SetFacing(_rb.linearVelocity.x);
         }
     }
 

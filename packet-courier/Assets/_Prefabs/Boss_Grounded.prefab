@@ -1,0 +1,186 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7300000000000000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7300000000000000002}
+  - component: {fileID: 7300000000000000003}
+  - component: {fileID: 7300000000000000004}
+  - component: {fileID: 7300000000000000005}
+  - component: {fileID: 7300000000000000006}
+  - component: {fileID: 7300000000000000007}
+  m_Layer: 0
+  m_Name: Boss_Grounded
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7300000000000000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7300000000000000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &7300000000000000003
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7300000000000000001}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 4
+  m_LinearDamping: 0.5
+  m_AngularDamping: 0.05
+  m_GravityScale: 3
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 1
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 4
+--- !u!61 &7300000000000000004
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7300000000000000001}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 1}
+  m_AutoTiling: 0
+  m_Size: {x: 1.1, y: 2}
+  m_EdgeRadius: 0
+--- !u!114 &7300000000000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7300000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4f9c2e81b704d3e9c82f1a6d5e03b42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Boss_Grounded
+  bossName: BOSS CUSTOM
+  maxHitPoints: 10
+  totalPhases: 3
+  refillHealthEachPhase: 1
+  rewardBits: 250
+  rewardLedgerId: boss:grounded:kill
+  unlockAchievementId: 
+  visualScale: 1
+  cleaveDamage: 22
+  dashDamage: 24
+  slamDamage: 26
+  customIdleSprite: {fileID: 0}
+  customProfile: {fileID: 11400000, guid: b2020000000040008000000000000001, type: 2}
+  customProfileResourcePath: 
+  customAnimator: {fileID: 0}
+  customSpriteAnimator: {fileID: 7300000000000000006}
+  visualRoot: {fileID: 0}
+  bodyRenderer: {fileID: 0}
+  bodyAnimator: {fileID: 0}
+  requireArenaTrigger: 0
+  autoAggroRange: 13
+--- !u!114 &7300000000000000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7300000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51d4e85c4fe593145b1e6d5909c7231d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ModularSpriteAnimator
+  profile: {fileID: 11400000, guid: b2020000000040008000000000000001, type: 2}
+  defaultSprite: {fileID: 0}
+  targetRenderer: {fileID: 0}
+  defaultState: Idle
+  playOnStart: 1
+  invertFacing: 0
+  useExternalFacing: 1
+  visualScaleMultiplier: 1
+  visualOffset: {x: 0, y: 0}
+  playbackSpeed: 1
+  applyStateTint: 0
+  states: []
+--- !u!114 &7300000000000000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7300000000000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b34385e6f543579488be5f8cf632f94f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossAnimationBridge
+  animator: {fileID: 7300000000000000006}
+  bossController: {fileID: 7300000000000000005}
+  idleState: Idle
+  walkState: Walk
+  windupState: Windup
+  slashState: Slash
+  attackState: Attack
+  dashState: Dash
+  jumpState: Jump
+  slamState: Slam
+  hurtState: Hurt
+  phaseShiftState: PhaseShift
+  deathState: Death
+  autoFacing: 1

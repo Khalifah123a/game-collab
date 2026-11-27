@@ -46,10 +46,16 @@ public class Boss_Grounded : MonoBehaviour, IBossController
     public float slamDamage = 26f;
 
     [Header("Modular Visuals (Swap-Ready for Friend Assets)")]
-    [Tooltip("Optional custom sprite override (Bottom-Center pivot recommended).")]
+    [Tooltip("Opsional: Drag 1 sprite diam custom langsung ke sini (Bottom-Center pivot disarankan).")]
     public Sprite customIdleSprite;
+    [Tooltip("Opsional: Drag asset SpriteAnimationProfile ke sini (atau isi file di Resources/CustomAnimations/).")]
+    public SpriteAnimationProfile customProfile;
+    [Tooltip("Opsional: Path Resource profile otomatis (contoh: CustomAnimations/Boss_World5_Final).")]
+    public string customProfileResourcePath = "";
     [Tooltip("Optional Animator Controller supporting Speed, IsGrounded, Phase, Wake, Windup, Slash, Dash, JumpSlam, PhaseShift, Hurt, Die, Exhausted.")]
     public RuntimeAnimatorController customAnimator;
+    [Tooltip("Optional ModularSpriteAnimator component for frame-by-frame custom friend sprites.")]
+    public ModularSpriteAnimator customSpriteAnimator;
     public Transform visualRoot;
     public SpriteRenderer bodyRenderer;
     public Animator bodyAnimator;
@@ -151,10 +157,88 @@ public class Boss_Grounded : MonoBehaviour, IBossController
         _hitPoints = Mathf.Max(1, maxHitPoints);
         _phase = 1;
         _phaseRefillProgress = 1f;
+        ApplyCustomArtSetup();
         SnapFeetToGround();
         ApplyPhaseVisuals(1);
         SetTelegraph(false, Vector2.zero, Vector2.one, Color.clear);
         if (_slashArcRenderer != null) _slashArcRenderer.enabled = false;
+    }
+
+    private SpriteAnimationProfile ResolveCustomProfile()
+    {
+        if (customProfile != null && customProfile.HasAnyCustomArt()) return customProfile;
+        if (!string.IsNullOrEmpty(customProfileResourcePath))
+        {
+            var explicitProf = Resources.Load<SpriteAnimationProfile>(customProfileResourcePath);
+            if (explicitProf != null && explicitProf.HasAnyCustomArt()) return explicitProf;
+        }
+
+        string lowerName = ((gameObject != null ? gameObject.name : "") + " " + (bossName ?? "")).ToLowerInvariant();
+        string autoKey = null;
+        if (lowerName.Contains("censor")) autoKey = "CustomAnimations/Boss_World2_Censor";
+        else if (lowerName.Contains("solaris")) autoKey = "CustomAnimations/Boss_World4_Solaris";
+        else if (lowerName.Contains("final") || lowerName.Contains("rootkit") || lowerName.Contains("akhir")) autoKey = "CustomAnimations/Boss_World5_Final";
+        else if (lowerName.Contains("sentinel")) autoKey = "CustomAnimations/Boss_World1_Sentinel";
+
+        if (!string.IsNullOrEmpty(autoKey))
+        {
+            var matched = Resources.Load<SpriteAnimationProfile>(autoKey);
+            if (matched != null && matched.HasAnyCustomArt()) return matched;
+        }
+
+        var fallback = Resources.Load<SpriteAnimationProfile>("CustomAnimations/Boss_Default");
+        if (fallback != null && fallback.HasAnyCustomArt()) return fallback;
+        return null;
+    }
+
+    private void ApplyCustomArtSetup()
+    {
+        if (bodyRenderer == null && visualRoot != null)
+            bodyRenderer = visualRoot.GetComponent<SpriteRenderer>();
+
+        if (customSpriteAnimator == null)
+        {
+            customSpriteAnimator = GetComponent<ModularSpriteAnimator>();
+            if (customSpriteAnimator == null && visualRoot != null)
+                customSpriteAnimator = visualRoot.GetComponent<ModularSpriteAnimator>();
+        }
+
+        SpriteAnimationProfile resolvedProfile = ResolveCustomProfile();
+        bool inlineAnimatorHasArt = customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt();
+
+        if (resolvedProfile != null)
+        {
+            if (customSpriteAnimator == null)
+            {
+                customSpriteAnimator = gameObject.AddComponent<ModularSpriteAnimator>();
+            }
+            customSpriteAnimator.targetRenderer = bodyRenderer;
+            customSpriteAnimator.useExternalFacing = true;
+            customSpriteAnimator.ApplyProfile(resolvedProfile, overwriteExisting: !inlineAnimatorHasArt);
+        }
+
+        if (customSpriteAnimator != null && bodyRenderer != null)
+        {
+            customSpriteAnimator.targetRenderer = bodyRenderer;
+            customSpriteAnimator.useExternalFacing = true;
+            customSpriteAnimator.EnsureRenderer();
+            if (customIdleSprite != null && customSpriteAnimator.defaultSprite == null)
+                customSpriteAnimator.defaultSprite = customIdleSprite;
+
+            if (customSpriteAnimator.HasAnyCustomArt())
+            {
+                if (!customSpriteAnimator.PlaySmart("Idle", _phase))
+                {
+                    Sprite fb = customSpriteAnimator.GetFallbackSprite();
+                    if (fb != null) bodyRenderer.sprite = fb;
+                }
+                bodyRenderer.flipX = customSpriteAnimator.invertFacing;
+            }
+        }
+        else if (customIdleSprite != null && bodyRenderer != null)
+        {
+            bodyRenderer.sprite = customIdleSprite;
+        }
     }
 
     public void EngageArena(float arenaMinX, float arenaMaxX, float floorY, Action onDefeated = null)
@@ -241,6 +325,19 @@ public class Boss_Grounded : MonoBehaviour, IBossController
         bodyRenderer.sprite = customIdleSprite != null ? customIdleSprite : GetProceduralSentinelSprite();
         bodyRenderer.sortingOrder = 12;
 
+        if (customSpriteAnimator == null)
+        {
+            customSpriteAnimator = GetComponent<ModularSpriteAnimator>();
+            if (customSpriteAnimator == null && visualRoot != null)
+                customSpriteAnimator = visualRoot.GetComponent<ModularSpriteAnimator>();
+        }
+        if (customSpriteAnimator != null && bodyRenderer != null)
+        {
+            customSpriteAnimator.targetRenderer = bodyRenderer;
+            customSpriteAnimator.useExternalFacing = true;
+            customSpriteAnimator.EnsureRenderer();
+        }
+
         if (customAnimator != null)
         {
             bodyAnimator = visualRoot.GetComponent<Animator>();
@@ -324,6 +421,19 @@ public class Boss_Grounded : MonoBehaviour, IBossController
     {
         if (bodyAnimator != null && _animParams != null && _animParams.Contains(param))
             bodyAnimator.SetTrigger(param);
+
+        if (customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt())
+        {
+            if (param == "Wake") customSpriteAnimator.PlaySmart("Idle", _phase);
+            else if (param == "Windup") customSpriteAnimator.PlaySmart("Windup", _phase, "Slash", "Attack");
+            else if (param == "Slash") customSpriteAnimator.PlaySmart("Slash", _phase, "Attack");
+            else if (param == "Dash") customSpriteAnimator.PlaySmart("Dash", _phase, "Walk", "Attack");
+            else if (param == "JumpSlam") customSpriteAnimator.PlaySmart("Jump", _phase, "JumpSlam", "Slam", "Attack");
+            else if (param == "Hurt" || param == "Exhausted") customSpriteAnimator.PlaySmart(param, _phase, "Hurt", "Idle");
+            else if (param == "PhaseShift") customSpriteAnimator.PlaySmart("PhaseShift", _phase, "Special", "Attack", "Slash");
+            else if (param == "Die") customSpriteAnimator.PlaySmart("Death", _phase, "Die", "Hurt");
+            else customSpriteAnimator.PlaySmart(param, _phase, "Idle");
+        }
     }
 
     private void RefreshColliderIgnores()
@@ -1200,9 +1310,12 @@ public class Boss_Grounded : MonoBehaviour, IBossController
     {
         _squashScale = Vector2.Lerp(_squashScale, Vector2.one, 12f * Time.fixedDeltaTime);
 
+        bool hasCustomArt = customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt();
+        float customScaleMult = hasCustomArt ? Mathf.Clamp(customSpriteAnimator.visualScaleMultiplier, 0.25f, 4f) : 1f;
+
         if (visualRoot != null)
         {
-            float baseScale = Mathf.Max(0.5f, visualScale);
+            float baseScale = Mathf.Max(0.5f, visualScale) * customScaleMult;
             float breathe = _state == BossState.Stalk && Mathf.Abs(_rb.linearVelocity.x) < 0.2f
                 ? 1f + 0.03f * Mathf.Sin(Time.time * 4f)
                 : 1f;
@@ -1214,7 +1327,13 @@ public class Boss_Grounded : MonoBehaviour, IBossController
             if (_flashTimer > 0f) bodyRenderer.color = Color.white;
             else if (_state == BossState.PhaseShift) bodyRenderer.color = _phaseTint;
             else if (_state == BossState.Exhausted) bodyRenderer.color = new Color(0.55f, 0.72f, 0.9f, 1f);
-            else bodyRenderer.color = _baseArmorTint;
+            else bodyRenderer.color = hasCustomArt ? Color.Lerp(Color.white, _baseArmorTint, 0.35f) : _baseArmorTint;
+
+            // VisualRoot.localScale.x already flips facing, so flipX only applies invertFacing (ZERO double-flip!)
+            if (hasCustomArt)
+            {
+                bodyRenderer.flipX = customSpriteAnimator.invertFacing;
+            }
         }
 
         if (_auraRenderer != null)
@@ -1226,6 +1345,27 @@ public class Boss_Grounded : MonoBehaviour, IBossController
         SetAnimFloat("Speed", _rb != null ? Mathf.Abs(_rb.linearVelocity.x) : 0f);
         SetAnimBool("IsGrounded", _isGrounded);
         SetAnimInt("Phase", _phase);
+
+        if (hasCustomArt)
+        {
+            customSpriteAnimator.useExternalFacing = true;
+            if (_state == BossState.Stalk)
+            {
+                bool isWalking = _rb != null && Mathf.Abs(_rb.linearVelocity.x) > 0.15f;
+                string preferred = isWalking ? "Walk" : "Idle";
+                string expected = (_phase > 1 && customSpriteAnimator.HasValidState($"{preferred}_P{_phase}"))
+                    ? $"{preferred}_P{_phase}"
+                    : preferred;
+                if (!customSpriteAnimator.IsPlayingState(expected))
+                {
+                    customSpriteAnimator.PlaySmart(preferred, _phase, "Idle", "Walk");
+                }
+            }
+            else if (_state == BossState.SlamFall && !customSpriteAnimator.IsPlayingState("Slam"))
+            {
+                customSpriteAnimator.PlaySmart("Slam", _phase, "JumpSlam", "Attack");
+            }
+        }
     }
 
     private void OnDestroy()

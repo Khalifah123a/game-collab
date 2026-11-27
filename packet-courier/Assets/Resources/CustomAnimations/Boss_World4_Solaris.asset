@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7a91e4f2d804c63a5e72b904f8d12a1, type: 3}
+  m_Name: Boss_World4_Solaris
+  m_EditorClassIdentifier: Assembly-CSharp::SpriteAnimationProfile
+  defaultSprite: {fileID: 0}
+  invertFacing: 0
+  visualScaleMultiplier: 1
+  visualOffset: {x: 0, y: 0}
+  playbackSpeed: 1
+  applyStateTint: 0
+  states:
+  - stateName: Idle
+    frames: []
+    framesPerSecond: 6
+    loop: 1
+    triggerFrame: -1
+    eventTag: ""
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Walk
+    frames: []
+    framesPerSecond: 9
+    loop: 1
+    triggerFrame: -1
+    eventTag: ""
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Windup
+    frames: []
+    framesPerSecond: 10
+    loop: 0
+    triggerFrame: -1
+    eventTag: ""
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Slash
+    frames: []
+    framesPerSecond: 14
+    loop: 0
+    triggerFrame: 2
+    eventTag: hit
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Attack
+    frames: []
+    framesPerSecond: 12
+    loop: 0
+    triggerFrame: 2
+    eventTag: hit
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Dash
+    frames: []
+    framesPerSecond: 14
+    loop: 1
+    triggerFrame: -1
+    eventTag: ""
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Jump
+    frames: []
+    framesPerSecond: 10
+    loop: 0
+    triggerFrame: -1
+    eventTag: ""
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Slam
+    frames: []
+    framesPerSecond: 12
+    loop: 0
+    triggerFrame: 1
+    eventTag: slam
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: PhaseShift
+    frames: []
+    framesPerSecond: 10
+    loop: 0
+    triggerFrame: -1
+    eventTag: ""
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Hurt
+    frames: []
+    framesPerSecond: 12
+    loop: 0
+    triggerFrame: -1
+    eventTag: ""
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0
+  - stateName: Death
+    frames: []
+    framesPerSecond: 8
+    loop: 0
+    triggerFrame: -1
+    eventTag: ""
+    localOffset: {x: 0, y: 0}
+    stateTint: {r: 1, g: 1, b: 1, a: 1}
+    unscaledTime: 0

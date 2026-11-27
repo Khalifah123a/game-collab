@@ -16,6 +16,14 @@ public class Enemy_Flying : MonoBehaviour, IEnemyDamageable
     public int hitPoints = 2;
     public float damageAmount = 12f;
 
+    [Header("Custom Sprite & Animasi (Opsional — Drag Asset Sendiri)")]
+    [Tooltip("Opsional: Drag 1 sprite custom langsung ke sini.")]
+    public Sprite customSprite;
+    [Tooltip("Opsional: Drag SpriteAnimationProfile ke sini (otomatis memuat Resources/CustomAnimations/Enemy_Flying jika ada isinya).")]
+    public SpriteAnimationProfile customProfile;
+    [Tooltip("Optional ModularSpriteAnimator component for custom friend sprites.")]
+    public ModularSpriteAnimator customSpriteAnimator;
+
     public enum State { Patrol, Chase, Windup, Attack, Recovery, Stunned, Return, Dead }
     public State currentState;
     public Transform HitTransform => transform;
@@ -90,6 +98,48 @@ public class Enemy_Flying : MonoBehaviour, IEnemyDamageable
             sprite.color = baseColor;
         }
         if (transform.localScale.sqrMagnitude < 0.1f) transform.localScale = Vector3.one;
+        ApplyCustomArtSetup();
+    }
+
+    private void ApplyCustomArtSetup()
+    {
+        if (customSpriteAnimator == null) customSpriteAnimator = GetComponent<ModularSpriteAnimator>();
+
+        SpriteAnimationProfile resolved = (customProfile != null && customProfile.HasAnyCustomArt())
+            ? customProfile
+            : Resources.Load<SpriteAnimationProfile>("CustomAnimations/Enemy_Flying");
+        if (resolved != null && !resolved.HasAnyCustomArt()) resolved = null;
+
+        bool inlineHasArt = customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt();
+        if (resolved != null)
+        {
+            if (customSpriteAnimator == null) customSpriteAnimator = gameObject.AddComponent<ModularSpriteAnimator>();
+            customSpriteAnimator.targetRenderer = sprite;
+            customSpriteAnimator.ApplyProfile(resolved, overwriteExisting: !inlineHasArt);
+        }
+
+        if (customSpriteAnimator != null && sprite != null)
+        {
+            customSpriteAnimator.targetRenderer = sprite;
+            customSpriteAnimator.EnsureRenderer();
+            if (customSprite != null && customSpriteAnimator.defaultSprite == null)
+                customSpriteAnimator.defaultSprite = customSprite;
+
+            if (customSpriteAnimator.HasAnyCustomArt())
+            {
+                float mult = Mathf.Clamp(customSpriteAnimator.visualScaleMultiplier, 0.25f, 4f);
+                transform.localScale = new Vector3(transform.localScale.x * mult, transform.localScale.y * mult, transform.localScale.z);
+                if (!customSpriteAnimator.PlaySmart("Fly", 1, "Walk", "Idle"))
+                {
+                    Sprite fb = customSpriteAnimator.GetFallbackSprite();
+                    if (fb != null) sprite.sprite = fb;
+                }
+            }
+        }
+        else if (customSprite != null && sprite != null)
+        {
+            sprite.sprite = customSprite;
+        }
     }
 
     private void FixedUpdate()
@@ -155,16 +205,54 @@ public class Enemy_Flying : MonoBehaviour, IEnemyDamageable
         }
 
         if (warning) warning.gameObject.SetActive(currentState == State.Windup);
+        bool hasCustomArt = customSpriteAnimator != null && customSpriteAnimator.HasAnyCustomArt();
         if (sprite)
         {
-            if (body.linearVelocity.x != 0) sprite.flipX = body.linearVelocity.x < 0;
+            if (body.linearVelocity.x != 0)
+            {
+                bool flip = body.linearVelocity.x < 0;
+                if (customSpriteAnimator != null && customSpriteAnimator.invertFacing) flip = !flip;
+                sprite.flipX = flip;
+            }
             if (_flashTimer > 0f)
             {
                 sprite.color = Color.white;
             }
+            else if (currentState == State.Windup)
+            {
+                sprite.color = hasCustomArt ? Color.Lerp(baseColor, new Color(1f, 0.85f, 0.55f, 1f), 0.50f) : Color.yellow;
+            }
+            else if (currentState == State.Attack)
+            {
+                sprite.color = hasCustomArt ? Color.Lerp(baseColor, new Color(1f, 0.45f, 0.40f, 1f), 0.50f) : Color.red;
+            }
             else
             {
-                sprite.color = currentState == State.Windup ? Color.yellow : currentState == State.Attack ? Color.red : baseColor;
+                sprite.color = baseColor;
+            }
+        }
+
+        if (hasCustomArt)
+        {
+            string preferred = currentState == State.Dead ? "Death"
+                : currentState == State.Stunned ? "Hurt"
+                : currentState == State.Windup ? "Windup"
+                : currentState == State.Attack ? "Attack"
+                : currentState == State.Chase ? "Chase"
+                : currentState == State.Recovery ? "Idle"
+                : (customSpriteAnimator.HasValidState("Fly") ? "Fly" : "Walk");
+
+            string fallback = currentState == State.Windup ? "Attack" : "Walk";
+            string targetPlay = customSpriteAnimator.HasValidState(preferred) ? preferred
+                : (customSpriteAnimator.HasValidState(fallback) ? fallback : "Idle");
+
+            if (!customSpriteAnimator.IsPlayingState(targetPlay))
+            {
+                customSpriteAnimator.PlaySmart(preferred, 1, fallback, "Idle", "Walk");
+            }
+            if (Mathf.Abs(body.linearVelocity.x) > 0.05f)
+            {
+                customSpriteAnimator.SetFacing(body.linearVelocity.x);
             }
         }
     }
