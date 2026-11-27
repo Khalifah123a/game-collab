@@ -102,7 +102,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.25, y: 0.25}
+    oldSize: {x: 1, y: 1}
     newSize: {x: 0.25, y: 0.25}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -221,6 +221,18 @@ MonoBehaviour:
   playbackSpeed: 1
   applyStateTint: 0
   states: []
+  onAnimationStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onAnimationCompleted:
+    m_PersistentCalls:
+      m_Calls: []
+  onFrameTrigger:
+    m_PersistentCalls:
+      m_Calls: []
+  onFrameChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7100000000000000002
 MonoBehaviour:
   m_ObjectHideFlags: 0
